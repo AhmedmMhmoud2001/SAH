@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html dir="<%= dir %>" lang="<%= lang %>">
+<head>
+  <meta charset="UTF-8">
+  <title>Certificate</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sah-blue: #0B2B4F;
+      --sah-gold: #D6A042;
+      --ischool-blue: #00AEEF;
+      --ischool-yellow: #FFD100;
+      --ischool-orange: #FF8200;
+      --ischool-red: #ED1B24;
+      --primary: #0f172a;
+      --white: #ffffff;
+    }
+
+    @page {
+      size: A4 landscape;
+      margin: 0;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Cairo', 'Inter', sans-serif;
+      background-color: #f0f9ff;
+    }
+
+    .certificate-wrapper {
+      width: 1122px; /* A4 Landscape at 96 DPI */
+      height: 794px;
+      background-color: var(--ischool-blue);
+      padding: 40px;
+      box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* The Curly/Wavy Pattern Border */
+    .bg-pattern {
+      position: absolute;
+      inset: 0;
+      opacity: 0.15;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 50 C10 20 50 20 50 50 C50 80 90 80 90 50' stroke='white' fill='none' stroke-width='4'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      pointer-events: none;
+    }
+
+    .main-frame {
+      width: 100%;
+      height: 100%;
+      background-color: var(--white);
+      border-radius: 40px;
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px;
+      box-sizing: border-box;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    }
+
+    .cornerLogo {
+      position: absolute;
+      top: 42px;
+      width: auto;
+      height: 64px;
+      border-radius: 16px;
+      box-shadow: 0 10px 18px rgba(0,0,0,0.10);
+      background: rgba(255,255,255,0.85);
+      padding: 6px;
+    }
+    html[dir="rtl"] .cornerLogo { right: 64px; }
+    html[dir="ltr"] .cornerLogo { left: 64px; }
+
+    /* Yellow Ribbons */
+    .ribbon {
+      position: absolute;
+      width: 250px;
+      height: 60px;
+      background-color: var(--ischool-yellow);
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .top-right-ribbon {
+      top: 20px;
+      right: -60px;
+      transform: rotate(45deg);
+      border-bottom: 8px solid rgba(0,0,0,0.05);
+    }
+
+    .bottom-left-ribbon {
+      bottom: 20px;
+      left: -60px;
+      transform: rotate(45deg);
+      border-top: 8px solid rgba(0,0,0,0.05);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .logoRow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .logoImg {
+      height: 58px;
+      width: auto;
+      border-radius: 14px;
+    }
+
+    .logo-text {
+      font-size: 48px;
+      font-weight: 900;
+      color: var(--ischool-blue);
+      letter-spacing: -2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .official-text {
+      font-size: 16px;
+      font-weight: 700;
+      color: #64748b;
+      margin-top: 16px;
+      text-transform: uppercase;
+    }
+
+    .title {
+      font-size: 72px;
+      font-weight: 900;
+      color: var(--ischool-blue);
+      margin: 5px 0;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 1px;
+    }
+
+    .presented-to {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 10px 0;
+    }
+
+    .student-name {
+      font-size: 64px;
+      font-weight: 900;
+      background: linear-gradient(to right, var(--ischool-orange), var(--ischool-red));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 15px 0;
+      padding: 10px 0;
+      display: inline-block;
+    }
+
+    .description {
+      font-size: 18px;
+      line-height: 1.8;
+      color: #334155;
+      max-width: 800px;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .track-highlight {
+      font-weight: 900;
+      color: var(--ischool-blue);
+    }
+
+    .sessions-highlight {
+      font-weight: 900;
+      color: var(--ischool-orange);
+    }
+
+    .wish-text {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--ischool-blue);
+      margin-top: 20px;
+    }
+
+    /* Footer Section */
+    .footer {
+      margin-top: auto;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 0 40px;
+      box-sizing: border-box;
+    }
+
+    .footer-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .footer-label {
+      font-size: 12px;
+      font-weight: 900;
+      color: #94a3b8;
+      text-transform: uppercase;
+    }
+
+    .footer-value {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--primary);
+    }
+
+    .code-en {
+      font-family: 'Inter', sans-serif;
+      color: var(--ischool-blue);
+    }
+
+    /* The Badge */
+    .academic-badge {
+      width: 140px;
+      height: 140px;
+      background: linear-gradient(135deg, #d4af37, #f4e4bc);
+      border-radius: 50%;
+      border: 8px solid white;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin-bottom: -15px;
+      overflow: hidden;
+    }
+
+    .academic-badge::before {
+      content: "<%= badgeTopText %>";
+      position: absolute;
+      top: 30px;
+      font-weight: 900;
+      color: white;
+      font-size: 18px;
+      letter-spacing: 0.4px;
+    }
+
+    .academic-badge::after {
+      content: "<%= badgeBottomText %>";
+      position: absolute;
+      bottom: 30px;
+      font-weight: 900;
+      color: white;
+      font-size: 14px;
+      letter-spacing: 0.4px;
+    }
+
+    .badge-icon {
+      font-size: 40px;
+      color: white;
+      font-weight: 900;
+    }
+
+    .signature-img {
+      height: 60px;
+      border-bottom: 2px solid var(--primary);
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="certificate-wrapper">
+    <div class="bg-pattern"></div>
+    <div class="ribbon top-right-ribbon"></div>
+    <div class="ribbon bottom-left-ribbon"></div>
+
+    <div class="main-frame">
+      <% if (logoDataUrl) { %>
+        <img class="cornerLogo" src="<%= logoDataUrl %>" alt="SAH" />
+      <% } %>
+      <div class="header">
+        <div class="official-text"><%= officialText %></div>
+        <h1 class="title"><%= certificateTitle %></h1>
+      </div>
+
+      <div class="presented-to"><%= presentedToText %></div>
+      <div class="student-name"><%= studentName %></div>
+
+      <div class="description">
+        <%= descriptionPrefix %> <span class="track-highlight">"<%= trackName %>"</span> <br>
+        <%= sessionsPrefix %> <span class="sessions-highlight"><%= sessionsCount %></span> <%= sessionsSuffix %> <br>
+        <%= descriptionSuffix %>
+      </div>
+
+      <div class="wish-text"><%= wishText %></div>
+
+      <div class="academic-badge">
+        <div class="badge-icon"><%= badgeIcon %></div>
+      </div>
+
+      <div class="footer">
+        <div class="footer-item" style="text-align: start;">
+          <div class="footer-label"><%= dateLabel %></div>
+          <div class="footer-value"><%= date %></div>
+          <div class="footer-label" style="margin-top: 15px;"><%= verificationLabel %></div>
+          <div class="footer-value code-en"><%= serialNumber %></div>
+        </div>
+
+        <div class="footer-item" style="text-align: end;">
+          <div class="signature-img">
+            <svg width="150" height="60" viewBox="0 0 150 60" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 50 Q 50 10 90 50 T 140 30" stroke="#0f172a" fill="none" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="footer-label"><%= supervisorLabel %></div>
+          <div class="footer-value"><%= supervisorValue %></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

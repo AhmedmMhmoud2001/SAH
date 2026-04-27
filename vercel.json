@@ -1,0 +1,13 @@
+{
+  "builds": [
+    {
+      "src": "sah_frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "sah_frontend/dist"
+      }
+    }
+  ],
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+}
+

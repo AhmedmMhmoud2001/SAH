@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120" fill="none" role="img" aria-label="سارة">
+  <rect width="120" height="120" rx="28" fill="rgba(11,43,79,.10)"/>
+  <circle cx="60" cy="50" r="22" fill="rgba(11,43,79,.55)"/>
+  <path d="M24 106c8-22 24-34 36-34s28 12 36 34" fill="rgba(214,160,66,.55)"/>
+  <text x="60" y="22" text-anchor="middle" font-family="system-ui,Segoe UI,Arial" font-size="14" font-weight="900" fill="rgba(11,43,79,.85)">سارة</text>
+</svg>
+

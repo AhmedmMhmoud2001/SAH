@@ -1,0 +1,157 @@
+.profilePage {
+  min-height: 70vh;
+  padding: 42px 0 56px;
+  background: #f8fafc;
+}
+
+.profileWrap {
+  max-width: 900px;
+}
+
+.profileTitle {
+  margin: 0 0 16px;
+  font-size: clamp(28px, 4vw, 40px);
+}
+
+.profileCard {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: clamp(18px, 3vw, 28px);
+  display: grid;
+  gap: 22px;
+}
+
+.profileSection + .profileSection {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 18px;
+}
+
+.profileSection h2 {
+  margin: 0 0 12px;
+  font-size: 20px;
+}
+
+.profileAvatarRow {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.profileAvatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  font-size: 28px;
+  font-weight: 900;
+  color: #334155;
+}
+
+.profileAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profileUploadBtn {
+  position: relative;
+  overflow: hidden;
+}
+
+.profileUploadBtn input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.profileForm {
+  display: grid;
+  gap: 12px;
+}
+
+.profileForm label {
+  display: grid;
+  gap: 8px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.profileForm input {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 11px 12px;
+  font-size: 14px;
+}
+
+.profileForm input:disabled {
+  background: #f1f5f9;
+}
+
+.profilePrimaryBtn {
+  width: 100%;
+  margin-top: 4px;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 10px;
+  background: #0b2b4f;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.profilePrimaryBtn:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+.profileDanger p {
+  margin: 0 0 12px;
+  color: #64748b;
+}
+
+.profileCoursesTableWrap {
+  overflow-x: auto;
+}
+
+.profileCoursesTable {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.profileCoursesTable th,
+.profileCoursesTable td {
+  text-align: start;
+  padding: 10px 12px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.profileCoursesTable th {
+  background: #f8fafc;
+  font-size: 13px;
+}
+
+.profileDangerBtn {
+  border: 1px solid #dc2626;
+  background: #fee2e2;
+  color: #991b1b;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.profileDangerBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

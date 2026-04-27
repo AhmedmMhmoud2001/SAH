@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="88" height="88" viewBox="0 0 88 88" fill="none" role="img" aria-label="شهادة إتمام">
+  <rect x="4" y="4" width="80" height="80" rx="22" fill="rgba(214,160,66,.14)" stroke="rgba(11,43,79,.12)"/>
+  <path d="M28 40c0-7.732 6.268-14 14-14s14 6.268 14 14" stroke="#0B2B4F" stroke-width="4" stroke-linecap="round"/>
+  <path d="M30 52h28" stroke="#D6A042" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="44" cy="44" r="6" fill="#0B2B4F"/>
+  <text x="44" y="76" text-anchor="middle" font-family="system-ui,Segoe UI,Arial" font-size="12" font-weight="800" fill="rgba(11,43,79,.92)">شهادة</text>
+</svg>
+

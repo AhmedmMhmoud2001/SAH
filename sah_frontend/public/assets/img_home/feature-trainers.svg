@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="88" height="88" viewBox="0 0 88 88" fill="none" role="img" aria-label="مدربون متخصصون">
+  <rect x="4" y="4" width="80" height="80" rx="22" fill="rgba(11,43,79,.10)" stroke="rgba(11,43,79,.12)"/>
+  <circle cx="44" cy="38" r="12" fill="rgba(11,43,79,.78)"/>
+  <path d="M22 68c4-14 13-22 22-22s18 8 22 22" fill="rgba(214,160,66,.55)"/>
+  <text x="44" y="76" text-anchor="middle" font-family="system-ui,Segoe UI,Arial" font-size="12" font-weight="800" fill="rgba(11,43,79,.92)">مدربون</text>
+</svg>
+

@@ -1,0 +1,30 @@
+-- CreateTable
+CREATE TABLE `home_page` (
+    `id` VARCHAR(191) NOT NULL,
+    `hero_title_ar` LONGTEXT NULL,
+    `hero_title_en` LONGTEXT NULL,
+    `hero_brand` VARCHAR(100) NULL,
+    `hero_subtitle_ar` LONGTEXT NULL,
+    `hero_subtitle_en` LONGTEXT NULL,
+    `hero_cta_label_ar` VARCHAR(255) NULL,
+    `hero_cta_label_en` VARCHAR(255) NULL,
+    `hero_cta_href` VARCHAR(255) NULL,
+    `intro_video_url` VARCHAR(500) NULL,
+    `hero_image_url` LONGTEXT NULL,
+    `features_ar` LONGTEXT NULL,
+    `features_en` LONGTEXT NULL,
+    `testimonials_ar` LONGTEXT NULL,
+    `testimonials_en` LONGTEXT NULL,
+    `steps_ar` LONGTEXT NULL,
+    `steps_en` LONGTEXT NULL,
+    `cta_title_ar` LONGTEXT NULL,
+    `cta_title_en` LONGTEXT NULL,
+    `cta_sub_ar` LONGTEXT NULL,
+    `cta_sub_en` LONGTEXT NULL,
+    `cta_btn_ar` VARCHAR(255) NULL,
+    `cta_btn_en` VARCHAR(255) NULL,
+    `cta_href` VARCHAR(255) NULL,
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

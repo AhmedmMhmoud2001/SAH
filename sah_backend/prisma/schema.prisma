@@ -1,0 +1,352 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String       @id @default(uuid())
+  name         String       @db.VarChar(255)
+  email        String       @unique @db.VarChar(255)
+  phone        String?      @db.VarChar(50)
+  passwordHash String       @map("password_hash") @db.VarChar(255)
+  role         String       @default("student") @db.VarChar(20) // Kept for backward compatibility
+  roleId       String?      @map("role_id")
+  roleRef      Role?        @relation(fields: [roleId], references: [id])
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  
+  enrollments Enrollment[]
+  progress    Progress[]
+  quizResults QuizResult[]
+  orders      Order[]
+  certificateRequests CertificateRequest[]
+
+  @@map("users")
+}
+
+model Role {
+  id          String       @id @default(uuid())
+  name        String       @unique @db.VarChar(50) // admin, employee, student
+  description String?      @db.VarChar(255)
+  permissions RolePermission[]
+  users       User[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String           @id @default(uuid())
+  name        String           @unique @db.VarChar(100) // users:read, courses:write, etc.
+  description String?          @db.VarChar(255)
+  roles       RolePermission[]
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       String     @map("role_id")
+  permissionId String     @map("permission_id")
+  role         Role       @relation(fields: [roleId], references: [id])
+  permission   Permission @relation(fields: [permissionId], references: [id])
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+
+
+model Course {
+  id            String    @id @default(uuid())
+  code          String    @unique @db.VarChar(20)
+  title         String    @db.VarChar(500)
+  enTitle       String?   @map("en_title") @db.VarChar(500)
+  description   String?   @db.LongText
+  enDescription String?  @map("en_description") @db.LongText
+  shortDesc     String?   @map("short_desc") @db.LongText
+  enShortDesc   String?   @map("en_short_desc") @db.LongText
+  longDesc      String?   @map("long_desc") @db.LongText
+  enLongDesc    String?   @map("en_long_desc") @db.LongText
+  duration     String?   @db.VarChar(50)
+  students     String?   @db.VarChar(50)
+  level        String?   @db.VarChar(50)
+  price        Float
+  imageUrl     String?   @map("image_url") @db.LongText
+  curriculum  String?   @db.LongText
+  enCurriculum String?   @map("en_curriculum") @db.LongText
+  curriculumDetails  String?   @map("curriculum_details") @db.LongText
+  enCurriculumDetails String?  @map("en_curriculum_details") @db.LongText
+  audience    String?   @db.LongText
+  enAudience  String?   @map("en_audience") @db.LongText
+  certificateText   String? @map("certificate_text") @db.LongText
+  enCertificateText String? @map("en_certificate_text") @db.LongText
+  isFeatured   Boolean   @default(false) @map("is_featured")
+  createdAt   DateTime  @default(now())
+  
+  lessons     Lesson[]
+  enrollments Enrollment[]
+  progress   Progress[]
+  quizzes    Quiz[]
+  coupons    Coupon[]
+  certificateRequests CertificateRequest[]
+
+  @@map("courses")
+}
+
+model Lesson {
+  id        String   @id @default(uuid())
+  courseId  String   @map("course_id")
+  course    Course   @relation(fields: [courseId], references: [id])
+  title     String   @db.VarChar(500)
+  enTitle   String?  @map("en_title") @db.VarChar(500)
+  duration  String?  @db.VarChar(20)
+  videoUrl  String?  @map("video_url") @db.LongText
+  thumbnailUrl String? @map("thumbnail_url") @db.LongText
+  type      String   @default("youtube") @db.VarChar(20)
+  sortOrder Int     @default(1)
+
+  quizzes   Quiz[]
+
+  @@map("lessons")
+}
+
+model Quiz {
+  id       String    @id @default(uuid())
+  courseId String?   @map("course_id")
+  course  Course?   @relation(fields: [courseId], references: [id])
+  lessonId String?   @map("lesson_id")
+  lesson   Lesson?   @relation(fields: [lessonId], references: [id])
+  type     String    @db.VarChar(20)
+  title    String?   @db.VarChar(500)
+  enTitle  String?   @map("en_title") @db.VarChar(500)
+  
+  questions Question[]
+  results  QuizResult[]
+
+  @@unique([lessonId])
+  @@map("quizzes")
+}
+
+model Question {
+  id           String   @id @default(uuid())
+  quizId       String   @map("quiz_id")
+  quiz         Quiz     @relation(fields: [quizId], references: [id])
+  text         String   @db.LongText
+  textEn       String?  @map("text_en") @db.LongText
+  options      String   @db.LongText
+  optionsEn    String?  @map("options_en") @db.LongText
+  correctIndex Int     @map("correct_index")
+
+  @@map("questions")
+}
+
+model Enrollment {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  user       User     @relation(fields: [userId], references: [id])
+  courseId   String   @map("course_id")
+  course     Course   @relation(fields: [courseId], references: [id])
+  enrolledAt DateTime @default(now())
+  orderId    String?  @map("order_id")
+  order      Order?   @relation(fields: [orderId], references: [id])
+
+  @@unique([userId, courseId])
+  @@map("enrollments")
+}
+
+model Order {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  user        User     @relation(fields: [userId], references: [id])
+  totalAmount Float    @map("total_amount")
+  currency    String   @default("SAR")
+  status      String   @default("pending") // pending, paid, cancelled, refunded
+  couponCode  String?  @map("coupon_code")
+  coupon      Coupon?  @relation(fields: [couponCode], references: [code])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  enrollments  Enrollment[]
+  transactions Transaction[]
+  refunds      Refund[]
+
+  @@map("orders")
+}
+
+model Transaction {
+  id            String   @id @default(uuid())
+  orderId       String   @map("order_id")
+  order         Order    @relation(fields: [orderId], references: [id])
+  paymentMethod String   @map("payment_method") // stripe, tap, paypal, bank_transfer
+  providerId    String?  @map("provider_id") // External reference ID
+  amount        Float
+  status        String   @default("pending") // success, failed, pending
+  createdAt     DateTime @default(now())
+
+  @@map("transactions")
+}
+
+model Coupon {
+  id             String    @id @default(uuid())
+  code           String    @unique @db.VarChar(50)
+  courseId       String?   @map("course_id")
+  course         Course?   @relation(fields: [courseId], references: [id])
+  discountType   String    @map("discount_type") // percentage, fixed
+  discountValue  Float     @map("discount_value")
+  minOrderAmount Float?    @map("min_order_amount")
+  maxDiscount    Float?    @map("max_discount")
+  usageLimit     Int?      @map("usage_limit")
+  usageCount     Int       @default(0) @map("usage_count")
+  startDate      DateTime? @map("start_date")
+  expiryDate     DateTime? @map("expiry_date")
+  isActive       Boolean   @default(true) @map("is_active")
+  createdAt      DateTime  @default(now())
+
+  orders Order[]
+
+  @@map("coupons")
+}
+
+model Refund {
+  id         String   @id @default(uuid())
+  orderId    String   @map("order_id")
+  order      Order    @relation(fields: [orderId], references: [id])
+  amount     Float
+  reason     String?
+  status     String   @default("pending") // pending, completed, failed
+  createdAt  DateTime @default(now())
+
+  @@map("refunds")
+}
+
+
+model Progress {
+  id               String   @id @default(uuid())
+  userId           String   @map("user_id")
+  user             User     @relation(fields: [userId], references: [id])
+  courseId         String   @map("course_id")
+  course           Course   @relation(fields: [courseId], references: [id])
+  completedLessons String?   @map("completed_lessons") @db.LongText
+  lastLessonId     String?  @map("last_lesson_id")
+  quizScores      String?   @map("quiz_scores") @db.LongText
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([userId, courseId])
+  @@map("progress")
+}
+
+model QuizResult {
+  id          String   @id @default(uuid())
+  userId     String   @map("user_id")
+  user       User     @relation(fields: [userId], references: [id])
+  quizId     String   @map("quiz_id")
+  quiz       Quiz     @relation(fields: [quizId], references: [id])
+  score      Int
+  total      Int
+  submittedAt DateTime @default(now())
+
+  @@map("quiz_results")
+}
+
+model CertificateRequest {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  courseId  String   @map("course_id")
+  fullName  String   @map("full_name") @db.VarChar(255)
+  fullNameEn String? @map("full_name_en") @db.VarChar(255)
+  completionAt DateTime? @map("completion_at")
+  startDate DateTime? @map("start_date") @db.Date
+  endDate   DateTime? @map("end_date") @db.Date
+  certificateImageArUrl String? @map("certificate_image_ar_url") @db.LongText
+  certificateImageEnUrl String? @map("certificate_image_en_url") @db.LongText
+  status    String   @default("pending") @db.VarChar(20) // pending, approved, rejected
+  notes     String?  @db.VarChar(500)
+  issuedAt  DateTime? @map("issued_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  user   User   @relation(fields: [userId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+
+  @@unique([userId, courseId])
+  @@map("certificate_requests")
+}
+
+model About {
+  id        String   @id @default(uuid())
+  titleAr   String   @db.VarChar(255)
+  titleEn   String   @db.VarChar(255)
+  contentAr String   @db.Text
+  contentEn String   @db.Text
+  videoUrl  String?  @db.VarChar(255)
+  imageUrl  String?  @db.VarChar(255)
+  updatedAt DateTime @updatedAt
+
+  @@map("about_page")
+}
+
+model ContactMessage {
+  id        String   @id @default(uuid())
+  name      String   @db.VarChar(255)
+  email     String   @db.VarChar(255)
+  subject   String?  @db.VarChar(255)
+  message   String   @db.Text
+  isRead    Boolean  @default(false) @map("is_read")
+  createdAt DateTime @default(now())
+
+  @@map("contact_messages")
+}
+
+model ContactInfo {
+  id        String   @id @default(uuid())
+  email     String?  @db.VarChar(255)
+  phone     String?  @db.VarChar(50)
+  address   String?  @db.Text
+  whatsapp  String?  @db.VarChar(50)
+  facebook  String?  @db.VarChar(255)
+  twitter   String?  @db.VarChar(255)
+  instagram String?  @db.VarChar(255)
+  linkedin  String?  @db.VarChar(255)
+  updatedAt DateTime @updatedAt
+
+  @@map("contact_info")
+}
+
+model HomePage {
+  id String @id @default(uuid())
+
+  heroTitleAr     String? @map("hero_title_ar") @db.LongText
+  heroTitleEn     String? @map("hero_title_en") @db.LongText
+  heroBrand       String? @map("hero_brand") @db.VarChar(100)
+  heroSubtitleAr  String? @map("hero_subtitle_ar") @db.LongText
+  heroSubtitleEn  String? @map("hero_subtitle_en") @db.LongText
+  heroCtaLabelAr  String? @map("hero_cta_label_ar") @db.VarChar(255)
+  heroCtaLabelEn  String? @map("hero_cta_label_en") @db.VarChar(255)
+  heroCtaHref     String? @map("hero_cta_href") @db.VarChar(255)
+  introVideoUrl   String? @map("intro_video_url") @db.VarChar(500)
+  heroImageUrl    String? @map("hero_image_url") @db.LongText
+
+  featuresAr      String? @map("features_ar") @db.LongText
+  featuresEn      String? @map("features_en") @db.LongText
+
+  testimonialsAr  String? @map("testimonials_ar") @db.LongText
+  testimonialsEn  String? @map("testimonials_en") @db.LongText
+
+  stepsAr         String? @map("steps_ar") @db.LongText
+  stepsEn         String? @map("steps_en") @db.LongText
+
+  ctaTitleAr      String? @map("cta_title_ar") @db.LongText
+  ctaTitleEn      String? @map("cta_title_en") @db.LongText
+  ctaSubAr        String? @map("cta_sub_ar") @db.LongText
+  ctaSubEn        String? @map("cta_sub_en") @db.LongText
+  ctaBtnAr        String? @map("cta_btn_ar") @db.VarChar(255)
+  ctaBtnEn        String? @map("cta_btn_en") @db.VarChar(255)
+  ctaHref         String? @map("cta_href") @db.VarChar(255)
+
+  updatedAt DateTime @updatedAt
+
+  @@map("home_page")
+}

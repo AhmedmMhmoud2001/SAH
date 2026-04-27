@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="88" height="88" viewBox="0 0 88 88" fill="none" role="img" aria-label="تدريب متخصص في Odoo">
+  <rect x="4" y="4" width="80" height="80" rx="22" fill="rgba(214,160,66,.10)" stroke="rgba(11,43,79,.12)"/>
+  <rect x="22" y="26" width="44" height="30" rx="10" fill="rgba(11,43,79,.78)"/>
+  <rect x="28" y="32" width="32" height="18" rx="9" fill="rgba(255,255,255,.18)"/>
+  <path d="M28 62h32" stroke="#D6A042" stroke-width="6" stroke-linecap="round"/>
+  <text x="44" y="76" text-anchor="middle" font-family="system-ui,Segoe UI,Arial" font-size="12" font-weight="800" fill="rgba(11,43,79,.92)">Odoo</text>
+</svg>
+

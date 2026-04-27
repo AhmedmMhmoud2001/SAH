@@ -1,0 +1,383 @@
+import cardHeaderImg from '../assets/img_home/Card Header.png'
+
+export const courses = [
+  {
+    id: 'c1',
+    title: 'أساسيات المحاسبة المالية',
+    enTitle: 'Financial Accounting Fundamentals',
+    shortDesc:
+      'تعلم المبادئ الأساسية للمحاسبة المالية من خلال دروس تفاعلية مع مدرب متخصص.',
+    enShortDesc:
+      'Learn the fundamentals of financial accounting through practical lessons and exercises.',
+    longDesc:
+      'دورة شاملة تغطي جميع أساسيات المحاسبة المالية التي تحتاجها لبناء قاعدة قوية في القوائم المالية، القيود المحاسبية، إعداد التقارير، والتحليل. موجهة للمبتدئين وحديثي التخرج وكل من يريد تطوير مهاراته بأسلوب عملي.',
+    enLongDesc:
+      'A comprehensive course covering the essentials of financial accounting: journal entries, financial statements, reporting, and analysis. Ideal for beginners and new graduates.',
+    duration: '20 ساعة',
+    students: '250 طالب',
+    level: 'مبتدئ',
+    price: '499 ر.س',
+    image: cardHeaderImg,
+    curriculum: [
+      'الوحدة الأولى: مدخل إلى المحاسبة',
+      'الوحدة الثانية: القيود اليومية والتسجيل',
+      'الوحدة الثالثة: الأستاذ العام والتسويات',
+      'الوحدة الرابعة: إعداد القوائم المالية',
+    ],
+    enCurriculum: [
+      'Unit 1: Introduction to Accounting',
+      'Unit 2: Journal Entries & Recording',
+      'Unit 3: General Ledger & Adjustments',
+      'Unit 4: Preparing Financial Statements',
+    ],
+    audience: ['طلاب المحاسبة الجدد', 'أصحاب المشاريع الصغيرة', 'المحاسبون المبتدئون'],
+    enAudience: ['New accounting students', 'Small business owners', 'Junior accountants'],
+    lessons: [
+      {
+        id: 'v1',
+        title: 'مدخل إلى المحاسبة المالية',
+        enTitle: 'Introduction to Financial Accounting',
+        duration: '12:40',
+        type: 'youtube',
+        videoUrl: 'https://www.youtube.com/embed/2eG6V4qV8k4',
+        quiz: {
+          id: 'q-v1',
+          title: 'اختبار: مدخل إلى المحاسبة المالية',
+          enTitle: 'Quiz: Introduction to Financial Accounting',
+          questions: [
+            {
+              text: 'ما الهدف الأساسي من المحاسبة المالية؟',
+              textEn: 'What is the primary goal of financial accounting?',
+              options: ['إدارة المخزون', 'توفير معلومات مالية لاتخاذ القرار', 'كتابة العقود', 'إدارة الموارد البشرية'],
+              optionsEn: ['Inventory management', 'Providing financial information for decisions', 'Writing contracts', 'Human resources management'],
+              correctIndex: 1,
+            },
+            {
+              text: 'أي القوائم التالية تُعد من القوائم المالية الأساسية؟',
+              textEn: 'Which of the following is a core financial statement?',
+              options: ['قائمة الدخل', 'قائمة الحضور', 'قائمة الموردين', 'قائمة المهام'],
+              optionsEn: ['Income statement', 'Attendance list', 'Supplier list', 'Task list'],
+              correctIndex: 0,
+            },
+          ],
+        },
+      },
+      {
+        id: 'v2',
+        title: 'القيود اليومية والتسجيل',
+        enTitle: 'Journal Entries & Recording',
+        duration: '18:05',
+        type: 'youtube',
+        videoUrl: 'https://www.youtube.com/embed/0o9aK8Zx4yM',
+        quiz: {
+          id: 'q-v2',
+          title: 'اختبار: القيود اليومية',
+          enTitle: 'Quiz: Journal Entries',
+          questions: [
+            {
+              text: 'القيد المحاسبي يتكوّن عادةً من:',
+              textEn: 'A journal entry usually consists of:',
+              options: ['مدين فقط', 'دائن فقط', 'مدين ودائن', 'وصف فقط'],
+              optionsEn: ['Debit only', 'Credit only', 'Debit and credit', 'Description only'],
+              correctIndex: 2,
+            },
+          ],
+        },
+      },
+    ],
+    finalQuiz: {
+      id: 'q-final',
+      title: 'الاختبار النهائي للدورة',
+      enTitle: 'Final Course Quiz',
+      questions: [
+        {
+          text: 'أي مما يلي يعبّر عن مفهوم الأصل (Asset)؟',
+          textEn: 'Which best describes an asset?',
+          options: ['التزام على المنشأة', 'مورد تملكه المنشأة وله منفعة مستقبلية', 'مصاريف تشغيلية', 'إيراد'],
+          optionsEn: ['A liability', 'A resource owned with future benefit', 'Operating expenses', 'Revenue'],
+          correctIndex: 1,
+        },
+        {
+          text: 'تتأثر قائمة الدخل بـ:',
+          textEn: 'The income statement is affected by:',
+          options: ['الإيرادات والمصروفات', 'الأصول فقط', 'الخصوم فقط', 'رأس المال فقط'],
+          optionsEn: ['Revenues and expenses', 'Assets only', 'Liabilities only', 'Equity only'],
+          correctIndex: 0,
+        },
+      ],
+    },
+  },
+  {
+    id: 'c2',
+    title: 'المحاسبة الإدارية وتحليل التكاليف',
+    enTitle: 'Managerial Accounting & Cost Analysis',
+    shortDesc: 'أدوات عملية لاتخاذ القرار وإدارة التكاليف بكفاءة.',
+    enShortDesc: 'Practical tools for decision-making and managing costs efficiently.',
+    longDesc:
+      'تعلّم مفاهيم التكاليف وأنواعها، وتحليل الانحرافات، واتخاذ القرارات الإدارية بناءً على بيانات مالية دقيقة، مع أمثلة عملية وتمارين.',
+    enLongDesc:
+      'Learn cost concepts and types, variance analysis, and managerial decisions based on accurate financial data through examples and exercises.',
+    duration: '20 ساعة',
+    students: '180 طالب',
+    level: 'متوسط',
+    price: '420 ر.س',
+    image: cardHeaderImg,
+    curriculum: ['مقدمة في التكاليف', 'مراكز التكلفة', 'الانحرافات', 'قرارات التسعير'],
+    enCurriculum: [
+      'Costing fundamentals',
+      'Cost centers',
+      'Variance analysis',
+      'Pricing decisions',
+    ],
+    audience: ['محاسبو التكاليف', 'المدراء', 'رواد الأعمال'],
+    enAudience: ['Cost accountants', 'Managers', 'Entrepreneurs'],
+    lessons: [
+      {
+        id: 'v1',
+        title: 'مقدمة في محاسبة التكاليف',
+        enTitle: 'Introduction to Cost Accounting',
+        duration: '14:20',
+        type: 'youtube',
+        videoUrl: 'https://www.youtube.com/embed/RuY3L8Zk1uQ',
+        quiz: {
+          id: 'q-v1',
+          title: 'اختبار: مقدمة في التكاليف',
+          enTitle: 'Quiz: Intro to Costs',
+          questions: [
+            {
+              text: 'محاسبة التكاليف تُستخدم أساسًا لـ:',
+              textEn: 'Cost accounting is mainly used to:',
+              options: ['تحديد تكلفة المنتج/الخدمة', 'تحديد الرواتب فقط', 'إدارة الضرائب فقط', 'تصميم الشعارات'],
+              optionsEn: ['Determine product/service cost', 'Only calculate salaries', 'Only manage taxes', 'Design logos'],
+              correctIndex: 0,
+            },
+            {
+              text: 'أي التالي يعتبر تكلفة مباشرة؟',
+              textEn: 'Which is a direct cost?',
+              options: ['إيجار المصنع', 'مواد خام للمنتج', 'رواتب الإدارة', 'فاتورة الإنترنت'],
+              optionsEn: ['Factory rent', 'Raw materials for the product', 'Admin salaries', 'Internet bill'],
+              correctIndex: 1,
+            },
+          ],
+        },
+      },
+      {
+        id: 'v2',
+        title: 'مراكز التكلفة وتوزيع المصروفات',
+        enTitle: 'Cost Centers & Expense Allocation',
+        duration: '19:10',
+        type: 'youtube',
+        videoUrl: 'https://www.youtube.com/embed/4m8tVd2Xy2g',
+        quiz: {
+          id: 'q-v2',
+          title: 'اختبار: مراكز التكلفة',
+          enTitle: 'Quiz: Cost Centers',
+          questions: [
+            {
+              text: 'الهدف من مراكز التكلفة هو:',
+              textEn: 'The purpose of cost centers is to:',
+              options: ['زيادة الضرائب', 'تجميع وتحليل التكاليف حسب الأقسام/الأنشطة', 'إلغاء التقارير', 'تقليل المبيعات'],
+              optionsEn: ['Increase taxes', 'Group and analyze costs by departments/activities', 'Cancel reports', 'Reduce sales'],
+              correctIndex: 1,
+            },
+          ],
+        },
+      },
+      {
+        id: 'v3',
+        title: 'تحليل الانحرافات واتخاذ القرار',
+        enTitle: 'Variance Analysis & Decision Making',
+        duration: '16:35',
+        type: 'youtube',
+        videoUrl: 'https://www.youtube.com/embed/9dQf8bYk0cA',
+        quiz: {
+          id: 'q-v3',
+          title: 'اختبار: الانحرافات',
+          enTitle: 'Quiz: Variances',
+          questions: [
+            {
+              text: 'الانحراف هو الفرق بين:',
+              textEn: 'A variance is the difference between:',
+              options: ['الميزانية الفعلية والميزانية التقديرية', 'النتائج الفعلية والنتائج المعيارية/المخططة', 'الأصول والخصوم', 'الإيرادات والمخزون'],
+              optionsEn: ['Actual and estimated budget', 'Actual results and standard/planned results', 'Assets and liabilities', 'Revenues and inventory'],
+              correctIndex: 1,
+            },
+          ],
+        },
+      },
+      {
+        id: 'v4',
+        title: 'قرارات التسعير وقياس الربحية',
+        enTitle: 'Pricing Decisions & Profitability',
+        duration: '21:00',
+        type: 'youtube',
+        videoUrl: 'https://www.youtube.com/embed/1oEwT3f2X8w',
+        quiz: {
+          id: 'q-v4',
+          title: 'اختبار: التسعير والربحية',
+          enTitle: 'Quiz: Pricing & Profitability',
+          questions: [
+            {
+              text: 'هامش المساهمة يُستخدم للمساعدة في:',
+              textEn: 'Contribution margin helps with:',
+              options: ['قرارات التسعير وحجم الإنتاج', 'اختيار الألوان', 'ترتيب الملفات', 'إنشاء حسابات'],
+              optionsEn: ['Pricing and production volume decisions', 'Choosing colors', 'Organizing files', 'Creating accounts'],
+              correctIndex: 0,
+            },
+          ],
+        },
+      },
+    ],
+    finalQuiz: {
+      id: 'q-final',
+      title: 'الاختبار النهائي للدورة',
+      enTitle: 'Final Course Quiz',
+      questions: [
+        {
+          text: 'التكلفة الثابتة تتميز بأنها:',
+          textEn: 'Fixed costs are:',
+          options: ['تتغير مع حجم الإنتاج', 'لا تتغير في المدى القصير ضمن نطاق ملائم', 'تساوي صفر دائمًا', 'تعتمد على سعر الصرف'],
+          optionsEn: ['Change with volume', 'Do not change in the short term within a relevant range', 'Always zero', 'Depend on exchange rate'],
+          correctIndex: 1,
+        },
+        {
+          text: 'أي التالي يساعد في اتخاذ قرار “صنع أم شراء”؟',
+          textEn: 'Which helps with “make or buy” decisions?',
+          options: ['تحليل التكاليف الملائمة', 'اختيار خط الموقع', 'مراجعة السيرة الذاتية', 'تحليل الصور'],
+          optionsEn: ['Relevant cost analysis', 'Choosing a font', 'Reviewing CV', 'Image analysis'],
+          correctIndex: 0,
+        },
+      ],
+    },
+  },
+  {
+    id: 'c3',
+    title: 'Odoo للمحاسبة وإدارة المبيعات',
+    enTitle: 'Odoo for Accounting & Sales',
+    shortDesc: 'تطبيقات عملية على Odoo لإدارة الحسابات والمبيعات.',
+    enShortDesc: 'Hands-on Odoo workflows for accounting and sales management.',
+    longDesc:
+      'تطبيق عملي خطوة بخطوة على إعدادات Odoo الأساسية للمحاسبة والمبيعات، إنشاء الفواتير، متابعة التحصيل، وربط العمليات اليومية بالتقارير.',
+    enLongDesc:
+      'A step-by-step practical course on Odoo Accounting and Sales setup: creating invoices, tracking collections, and connecting daily operations to reporting.',
+    duration: '20 ساعة',
+    students: '210 طالب',
+    level: 'متوسط',
+    price: '399 ر.س',
+    image: cardHeaderImg,
+    curriculum: ['إعداد النظام', 'المبيعات', 'الفواتير', 'التقارير'],
+    enCurriculum: ['System setup', 'Sales', 'Invoicing', 'Reports'],
+    audience: ['مستخدمو Odoo', 'المحاسبون', 'فرق المبيعات'],
+    enAudience: ['Odoo users', 'Accountants', 'Sales teams'],
+  },
+  {
+    id: 'c4',
+    title: 'تحليل القوائم المالية',
+    enTitle: 'Financial Statements Analysis',
+    shortDesc: 'اقرأ القوائم المالية واستخرج مؤشرات الأداء الأساسية.',
+    enShortDesc: 'Read financial statements and extract key performance indicators.',
+    longDesc:
+      'ستتعلم كيفية تحليل قائمة الدخل والميزانية وقائمة التدفقات النقدية، واستخراج النسب والمؤشرات لاتخاذ قرارات أفضل في الأعمال، مع حالات تطبيقية وتمارين.',
+    enLongDesc:
+      'Learn how to analyze the income statement, balance sheet, and cash flow statement, extract ratios and KPIs, and make better business decisions through practical cases and exercises.',
+    duration: '20 ساعة',
+    students: '160 طالب',
+    level: 'متوسط',
+    price: '450 ر.س',
+    image: cardHeaderImg,
+    curriculum: ['مقدمة في التحليل المالي', 'نسب الربحية والسيولة', 'تحليل التدفقات', 'دراسات حالة'],
+    enCurriculum: [
+      'Introduction to financial analysis',
+      'Profitability and liquidity ratios',
+      'Cash flow analysis',
+      'Case studies',
+    ],
+    audience: ['محللو المالية', 'المحاسبون', 'رواد الأعمال'],
+    enAudience: ['Financial analysts', 'Accountants', 'Entrepreneurs'],
+  },
+  {
+    id: 'c5',
+    title: 'Excel للمحاسبين من الصفر للاحتراف',
+    enTitle: 'Excel for Accountants: From Zero to Pro',
+    shortDesc: 'مهارات Excel التي يحتاجها المحاسب يوميًا بسرعة وبشكل عملي.',
+    enShortDesc: 'The Excel skills accountants use daily—fast and practical.',
+    longDesc:
+      'من أساسيات الجداول والدوال إلى الجداول المحورية والتقارير، ستبني نماذج محاسبية بسيطة وتتعلم اختصارات وممارسات تزيد إنتاجيتك في العمل.',
+    enLongDesc:
+      'From spreadsheets and formulas to pivot tables and reporting, you will build simple accounting models and learn shortcuts and best practices that improve productivity.',
+    duration: '20 ساعة',
+    students: '320 طالب',
+    level: 'مبتدئ',
+    price: '299 ر.س',
+    image: cardHeaderImg,
+    curriculum: ['الدوال الأساسية', 'التنسيق وإدارة البيانات', 'Pivot Tables', 'تقارير ولوحات متابعة'],
+    enCurriculum: ['Core formulas', 'Formatting & data management', 'Pivot tables', 'Reports & dashboards'],
+    audience: ['المحاسبون المبتدئون', 'الطلاب', 'موظفو المالية'],
+    enAudience: ['Junior accountants', 'Students', 'Finance staff'],
+  },
+  {
+    id: 'c6',
+    title: 'Odoo المخزون والمشتريات',
+    enTitle: 'Odoo Inventory & Purchases',
+    shortDesc: 'إدارة المخزون والمشتريات في Odoo خطوة بخطوة.',
+    enShortDesc: 'Manage inventory and purchasing in Odoo step by step.',
+    longDesc:
+      'تطبيق عملي على إعداد المنتجات والمستودعات، أوامر الشراء، الاستلامات والتحويلات، وتتبع الكميات والتكلفة، وربط ذلك بالتقارير.',
+    enLongDesc:
+      'A practical course on setting up products and warehouses, purchase orders, receipts and transfers, tracking quantities and costs, and connecting all of that to reporting.',
+    duration: '20 ساعة',
+    students: '140 طالب',
+    level: 'متوسط',
+    price: '379 ر.س',
+    image: cardHeaderImg,
+    curriculum: ['إعداد المستودعات', 'المنتجات والتسعير', 'أوامر الشراء', 'التقارير والتنبيهات'],
+    enCurriculum: ['Warehouse setup', 'Products & pricing', 'Purchase orders', 'Reports & alerts'],
+    audience: ['مدراء المخزون', 'المحاسبون', 'مشرفو المشتريات'],
+    enAudience: ['Inventory managers', 'Accountants', 'Purchasing supervisors'],
+  },
+  {
+    id: 'c7',
+    title: 'إعداد الميزانيات والتخطيط المالي',
+    enTitle: 'Budgeting & Financial Planning',
+    shortDesc: 'ابنِ ميزانية واقعية وراقب الانحرافات وقرارات التمويل.',
+    enShortDesc: 'Build realistic budgets, track variances, and make financing decisions.',
+    longDesc:
+      'يغطي هذا المساق منهجية إعداد الميزانيات التشغيلية والرأسمالية، أساليب التنبؤ، متابعة الانحرافات، وبناء خطة مالية تساعد على النمو والاستدامة.',
+    enLongDesc:
+      'This course covers operating and capital budgeting, forecasting methods, variance tracking, and building an annual financial plan that supports growth and sustainability.',
+    duration: '20 ساعة',
+    students: '110 طالب',
+    level: 'متقدم',
+    price: '520 ر.س',
+    image: cardHeaderImg,
+    curriculum: ['مفاهيم الميزانيات', 'التنبؤ المالي', 'متابعة الانحرافات', 'خطة مالية سنوية'],
+    enCurriculum: ['Budgeting concepts', 'Financial forecasting', 'Variance tracking', 'Annual financial plan'],
+    audience: ['المدراء الماليون', 'رواد الأعمال', 'المحللون'],
+    enAudience: ['Finance managers', 'Entrepreneurs', 'Analysts'],
+  },
+  {
+    id: 'c8',
+    title: 'محاسبة الشركات والقيود المتقدمة',
+    enTitle: 'Corporate Accounting & Advanced Entries',
+    shortDesc: 'تعمّق في قيود التسويات والإقفال والمعالجات المتقدمة.',
+    enShortDesc: 'Go deeper into adjustments, closing entries, and advanced treatments.',
+    longDesc:
+      'مساق يركز على المعالجات المتقدمة مثل الإهلاكات، المخصصات، الإيرادات المؤجلة، تسويات نهاية الفترة، والإقفال، مع تمارين شاملة على قيود واقعية.',
+    enLongDesc:
+      'A focused course on advanced treatments such as depreciation, provisions, deferred revenue, period-end adjustments, and closing entries—with comprehensive practice on realistic journal entries.',
+    duration: '20 ساعة',
+    students: '95 طالب',
+    level: 'متقدم',
+    price: '549 ر.س',
+    image: cardHeaderImg,
+    curriculum: ['تسويات نهاية الفترة', 'الإهلاكات والمخصصات', 'الإقفال', 'حالات تطبيقية'],
+    enCurriculum: ['Period-end adjustments', 'Depreciation & provisions', 'Closing entries', 'Practical cases'],
+    audience: ['المحاسبون', 'الطلاب المتقدمون', 'المدققون الجدد'],
+    enAudience: ['Accountants', 'Advanced students', 'Junior auditors'],
+  },
+]
+
+export function getCourseById(id) {
+  return courses.find((c) => c.id === id) ?? courses[0]
+}
+

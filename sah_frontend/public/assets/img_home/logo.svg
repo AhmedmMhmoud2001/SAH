@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="68" viewBox="0 0 220 68" fill="none" role="img" aria-label="SAH">
+  <rect x="1" y="1" width="218" height="66" rx="14" fill="#0B2B4F" stroke="rgba(255,255,255,.22)" />
+  <g fill="#D6A042">
+    <path d="M42 46c-9.39 0-17-7.61-17-17S32.61 12 42 12c5.08 0 9.64 2.23 12.75 5.75l-4.03 3.49A12 12 0 1 0 42 41c3.39 0 6.45-1.4 8.63-3.66l4.06 3.51C51.59 43.82 46.99 46 42 46Z"/>
+    <path d="M80 46V12h6v13h13V12h6v34h-6V31H86v15h-6Z"/>
+    <path d="M122 46l14-34h6l14 34h-6.5l-2.9-7h-15.2l-2.9 7H122Zm11.2-12h10.6l-5.3-13-5.3 13Z"/>
+  </g>
+  <text x="170" y="42" fill="rgba(255,255,255,.9)" font-family="system-ui,Segoe UI,Arial" font-size="22" font-weight="800">SAH</text>
+</svg>
+
