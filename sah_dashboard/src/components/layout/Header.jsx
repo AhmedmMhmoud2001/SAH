@@ -17,7 +17,7 @@ import {
 import { useTheme } from '../../context/ThemeContext'
 import { useI18n } from '../../context/I18nContext'
 import { useAuth } from '../../context/AuthContext'
-import sahLogo from '../../assets/sah-logo.svg'
+import sahLogo from '../../assets/Frame 4 (1).png'
 
 export default function Header({ toggleSidebar, toggleCollapse, isCollapsed }) {
   const navigate = useNavigate()
