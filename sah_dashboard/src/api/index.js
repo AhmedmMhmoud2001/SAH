@@ -18,6 +18,40 @@ const api = axios.create({
   }
 })
 
+function getOrCreateDeviceId() {
+  try {
+    const key = 'deviceId'
+    const existing = localStorage.getItem(key)
+    if (existing && String(existing).trim()) return String(existing).trim()
+    const id = (typeof crypto !== 'undefined' && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(16).slice(2)}`
+    localStorage.setItem(key, id)
+    return id
+  } catch {
+    return `${Date.now()}-${Math.random().toString(16).slice(2)}`
+  }
+}
+
+function getDeviceInfo() {
+  try {
+    return {
+      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+      platform: typeof navigator !== 'undefined' ? (navigator.platform || '') : '',
+      language: typeof navigator !== 'undefined' ? (navigator.language || '') : '',
+      timezone: (() => {
+        try {
+          return Intl.DateTimeFormat().resolvedOptions().timeZone || ''
+        } catch {
+          return ''
+        }
+      })(),
+    }
+  } catch {
+    return {}
+  }
+}
+
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
   if (token) {
@@ -58,7 +92,11 @@ export async function register(data) {
 }
 
 export async function login(data) {
-  const res = await api.post('/auth/login', data)
+  const res = await api.post('/auth/login', {
+    ...(data || {}),
+    deviceId: getOrCreateDeviceId(),
+    deviceInfo: getDeviceInfo(),
+  })
   if (res.data.token) {
     localStorage.setItem('token', res.data.token)
     localStorage.setItem('user', JSON.stringify(res.data.user))
@@ -159,6 +197,31 @@ export async function getAdminUsers(params = {}) {
 
 export async function getAdminUser(id) {
   const res = await api.get(`/admin/users/${id}`)
+  return res.data
+}
+
+export async function getAdminUserDeviceChangeRequests(userId, params = {}) {
+  const res = await api.get(`/admin/users/${userId}/device-change-requests`, { params })
+  return res.data
+}
+
+export async function getAdminDeviceChangeRequests(params = {}) {
+  const res = await api.get('/admin/device-change-requests', { params })
+  return res.data
+}
+
+export async function approveAdminDeviceChangeRequest(requestId) {
+  const res = await api.post(`/admin/device-change-requests/${requestId}/approve`)
+  return res.data
+}
+
+export async function rejectAdminDeviceChangeRequest(requestId) {
+  const res = await api.post(`/admin/device-change-requests/${requestId}/reject`)
+  return res.data
+}
+
+export async function clearAdminUserDevice(userId) {
+  const res = await api.post(`/admin/users/${userId}/clear-device`)
   return res.data
 }
 

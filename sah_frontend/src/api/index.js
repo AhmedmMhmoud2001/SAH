@@ -12,6 +12,40 @@ function getToken() {
   }
 }
 
+function getOrCreateDeviceId() {
+  try {
+    const key = 'deviceId'
+    const existing = localStorage.getItem(key)
+    if (existing && String(existing).trim()) return String(existing).trim()
+    const id = (typeof crypto !== 'undefined' && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(16).slice(2)}`
+    localStorage.setItem(key, id)
+    return id
+  } catch {
+    return `${Date.now()}-${Math.random().toString(16).slice(2)}`
+  }
+}
+
+function getDeviceInfo() {
+  try {
+    return {
+      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+      platform: typeof navigator !== 'undefined' ? (navigator.platform || '') : '',
+      language: typeof navigator !== 'undefined' ? (navigator.language || '') : '',
+      timezone: (() => {
+        try {
+          return Intl.DateTimeFormat().resolvedOptions().timeZone || ''
+        } catch {
+          return ''
+        }
+      })(),
+    }
+  } catch {
+    return {}
+  }
+}
+
 export function resolveAssetUrl(urlOrPath) {
   if (!urlOrPath) return ''
   if (/^https?:\/\//i.test(urlOrPath)) return urlOrPath
@@ -82,12 +116,32 @@ export function logout() {
 }
 
 export async function login({ email, password }) {
-  const data = await requestAuth('/auth/login', { method: 'POST', body: { email, password } })
+  const data = await requestAuth('/auth/login', {
+    method: 'POST',
+    body: {
+      email,
+      password,
+      deviceId: getOrCreateDeviceId(),
+      deviceInfo: getDeviceInfo(),
+    },
+  })
   if (data?.token) {
     localStorage.setItem('token', data.token)
     localStorage.setItem('user', JSON.stringify(data.user || null))
   }
   return data
+}
+
+export async function requestDeviceChange({ email, password }) {
+  return await requestAuth('/auth/device-change-requests', {
+    method: 'POST',
+    body: {
+      email,
+      password,
+      deviceId: getOrCreateDeviceId(),
+      deviceInfo: getDeviceInfo(),
+    },
+  })
 }
 
 export async function register({ name, email, phone, password }) {

@@ -1,6 +1,17 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { getAdminUser, getAdminRoles, getUserProgress, resolveAssetUrl, updateAdminUser, uploadAdminUserAvatar } from '../../api'
+import {
+  approveAdminDeviceChangeRequest,
+  clearAdminUserDevice,
+  getAdminUser,
+  getAdminRoles,
+  getAdminUserDeviceChangeRequests,
+  getUserProgress,
+  rejectAdminDeviceChangeRequest,
+  resolveAssetUrl,
+  updateAdminUser,
+  uploadAdminUserAvatar,
+} from '../../api'
 import { useI18n } from '../../context/I18nContext'
 import './AdminPages.css'
 
@@ -17,6 +28,10 @@ export default function UserView() {
   const [avatarFile, setAvatarFile] = useState(null)
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', role: 'student' })
   const [roles, setRoles] = useState([{ name: 'student' }, { name: 'admin' }])
+  const [deviceRequests, setDeviceRequests] = useState([])
+  const [loadingDeviceRequests, setLoadingDeviceRequests] = useState(true)
+  const [deviceActionLoadingId, setDeviceActionLoadingId] = useState('')
+  const [deviceError, setDeviceError] = useState('')
 
   function getRoleLabel(roleName) {
     const normalized = String(roleName || '').trim().toLowerCase()
@@ -27,10 +42,12 @@ export default function UserView() {
   async function loadData() {
     setLoading(true)
     setErrorMessage('')
+    setDeviceError('')
     try {
-      const [userData, progressData] = await Promise.all([
+      const [userData, progressData, deviceReqData] = await Promise.all([
         getAdminUser(id),
         getUserProgress(id),
+        getAdminUserDeviceChangeRequests(id, { status: 'pending' }).catch(() => ({ requests: [] })),
       ])
       const rolesData = await getAdminRoles().catch(() => null)
       const roleList = Array.isArray(rolesData?.roles) ? rolesData.roles : []
@@ -43,6 +60,7 @@ export default function UserView() {
         role: userData?.role || 'student',
       })
       setProgress(Array.isArray(progressData) ? progressData : [])
+      setDeviceRequests(Array.isArray(deviceReqData?.requests) ? deviceReqData.requests : [])
     } catch (error) {
       setUser(null)
       setProgress([])
@@ -50,6 +68,7 @@ export default function UserView() {
     } finally {
       setLoading(false)
       setLoadingProgress(false)
+      setLoadingDeviceRequests(false)
     }
   }
 
@@ -73,6 +92,17 @@ export default function UserView() {
   if (loading) return <p>{t('msg.loading')}</p>
   if (errorMessage) return <p>{errorMessage}</p>
   if (!user) return <p>{t('msg.noData')}</p>
+
+  const deviceInfoParsed = (() => {
+    const raw = user?.deviceInfo
+    if (!raw) return null
+    if (typeof raw !== 'string') return null
+    try {
+      return JSON.parse(raw)
+    } catch {
+      return null
+    }
+  })()
 
   return (
     <div className="admin-page">
@@ -105,6 +135,115 @@ export default function UserView() {
             <div><strong>{t('users.created')}:</strong> {new Date(user.createdAt).toLocaleString()}</div>
           </div>
         </div>
+
+        <h3 style={{ marginBottom: '10px' }}>{t('device.title')}</h3>
+        <div style={{ marginBottom: 18, color: 'var(--text-secondary, #64748b)' }}>
+          <div><strong>{t('device.deviceId')}:</strong> {user.deviceId || '-'}</div>
+          <div><strong>{t('device.boundAt')}:</strong> {user.deviceBoundAt ? new Date(user.deviceBoundAt).toLocaleString() : '-'}</div>
+          <div><strong>{t('device.os')}:</strong> {deviceInfoParsed?.platform || '-'}</div>
+          <div><strong>{t('device.userAgent')}:</strong> {deviceInfoParsed?.userAgent || '-'}</div>
+          <div><strong>{t('device.language')}:</strong> {deviceInfoParsed?.language || '-'}</div>
+          <div style={{ marginTop: 10, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <button
+              className="btn"
+              onClick={async () => {
+                setDeviceError('')
+                try {
+                  await clearAdminUserDevice(user.id)
+                  await loadData()
+                } catch (e) {
+                  setDeviceError(e?.response?.data?.error || t('msg.error'))
+                }
+              }}
+            >
+              {t('device.clear')}
+            </button>
+          </div>
+          {deviceError ? <p style={{ marginTop: 8, color: '#b91c1c' }}>{deviceError}</p> : null}
+        </div>
+
+        <h3 style={{ marginBottom: '10px' }}>{t('device.requests.title')}</h3>
+        {loadingDeviceRequests ? (
+          <p>{t('msg.loading')}</p>
+        ) : deviceRequests.length === 0 ? (
+          <p>{t('msg.noData')}</p>
+        ) : (
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>{t('device.requests.requestedAt')}</th>
+                <th>{t('device.requests.newDeviceId')}</th>
+                <th>{t('device.requests.userAgent')}</th>
+                <th>{t('device.requests.actions')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {deviceRequests.map((r) => {
+                const info = (() => {
+                  const raw = r?.newDeviceInfo
+                  if (!raw || typeof raw !== 'string') return null
+                  try {
+                    return JSON.parse(raw)
+                  } catch {
+                    return null
+                  }
+                })()
+                const isLoading = deviceActionLoadingId === r.id
+                return (
+                  <tr key={r.id}>
+                    <td>{r.createdAt ? new Date(r.createdAt).toLocaleString() : '-'}</td>
+                    <td style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace' }}>
+                      {r.newDeviceId}
+                    </td>
+                    <td style={{ maxWidth: 420, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {info?.userAgent || r.newDeviceInfo || '-'}
+                    </td>
+                    <td>
+                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                        <button
+                          className="btn btn-primary"
+                          disabled={isLoading}
+                          onClick={async () => {
+                            setDeviceError('')
+                            setDeviceActionLoadingId(r.id)
+                            try {
+                              await approveAdminDeviceChangeRequest(r.id)
+                              await loadData()
+                            } catch (e) {
+                              setDeviceError(e?.response?.data?.error || t('msg.error'))
+                            } finally {
+                              setDeviceActionLoadingId('')
+                            }
+                          }}
+                        >
+                          {t('device.requests.approve')}
+                        </button>
+                        <button
+                          className="btn"
+                          disabled={isLoading}
+                          onClick={async () => {
+                            setDeviceError('')
+                            setDeviceActionLoadingId(r.id)
+                            try {
+                              await rejectAdminDeviceChangeRequest(r.id)
+                              await loadData()
+                            } catch (e) {
+                              setDeviceError(e?.response?.data?.error || t('msg.error'))
+                            } finally {
+                              setDeviceActionLoadingId('')
+                            }
+                          }}
+                        >
+                          {t('device.requests.reject')}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        )}
 
         <h3 style={{ marginBottom: '10px' }}>{t('nav.myCourses')}</h3>
         {loadingProgress ? (

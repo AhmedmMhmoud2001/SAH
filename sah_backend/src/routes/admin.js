@@ -459,12 +459,155 @@ router.get('/users/:id', async (req, res) => {
         role: true,
         createdAt: true,
         updatedAt: true,
+        deviceId: true,
+        deviceInfo: true,
+        deviceBoundAt: true,
       }
     })
     if (!user) return res.status(404).json({ error: 'User not found' })
     res.json({ ...user, avatarUrl: getAvatarUrl(user.id) })
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch user details' })
+  }
+})
+
+router.get('/users/:id/device-change-requests', async (req, res) => {
+  try {
+    const { id: userId } = req.params
+    const status = req.query?.status ? String(req.query.status).trim().toLowerCase() : null
+    const where = {
+      userId: String(userId),
+      ...(status ? { status } : {}),
+    }
+    const requests = await prisma.deviceChangeRequest.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+      select: {
+        id: true,
+        userId: true,
+        newDeviceId: true,
+        newDeviceInfo: true,
+        status: true,
+        createdAt: true,
+        reviewedAt: true,
+        reviewedByAdminId: true,
+      },
+    })
+    res.json({ requests })
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch device change requests' })
+  }
+})
+
+router.get('/device-change-requests', async (req, res) => {
+  try {
+    const status = req.query?.status ? String(req.query.status).trim().toLowerCase() : 'pending'
+    const requests = await prisma.deviceChangeRequest.findMany({
+      where: status ? { status } : undefined,
+      orderBy: { createdAt: 'desc' },
+      take: 200,
+      select: {
+        id: true,
+        userId: true,
+        newDeviceId: true,
+        newDeviceInfo: true,
+        status: true,
+        createdAt: true,
+        reviewedAt: true,
+        reviewedByAdminId: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    })
+    res.json({ requests })
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch device change requests' })
+  }
+})
+
+router.post('/device-change-requests/:id/approve', async (req, res) => {
+  try {
+    const { id } = req.params
+    const current = await prisma.deviceChangeRequest.findUnique({
+      where: { id: String(id) },
+      select: { id: true, status: true, userId: true, newDeviceId: true, newDeviceInfo: true },
+    })
+    if (!current) return res.status(404).json({ error: 'Request not found' })
+    if (current.status !== 'pending') return res.status(409).json({ error: 'Request already reviewed' })
+
+    const reviewedByAdminId = req.user?.userId ? String(req.user.userId) : null
+
+    const updated = await prisma.$transaction(async (tx) => {
+      await tx.user.update({
+        where: { id: current.userId },
+        data: {
+          deviceId: current.newDeviceId,
+          deviceInfo: current.newDeviceInfo,
+          deviceBoundAt: new Date(),
+          sessionVersion: { increment: 1 },
+        },
+      })
+      return await tx.deviceChangeRequest.update({
+        where: { id: current.id },
+        data: {
+          status: 'approved',
+          reviewedAt: new Date(),
+          reviewedByAdminId: reviewedByAdminId || undefined,
+        },
+        select: { id: true, status: true, reviewedAt: true, reviewedByAdminId: true },
+      })
+    })
+
+    res.json({ request: updated })
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to approve request' })
+  }
+})
+
+router.post('/device-change-requests/:id/reject', async (req, res) => {
+  try {
+    const { id } = req.params
+    const current = await prisma.deviceChangeRequest.findUnique({
+      where: { id: String(id) },
+      select: { id: true, status: true },
+    })
+    if (!current) return res.status(404).json({ error: 'Request not found' })
+    if (current.status !== 'pending') return res.status(409).json({ error: 'Request already reviewed' })
+
+    const reviewedByAdminId = req.user?.userId ? String(req.user.userId) : null
+    const updated = await prisma.deviceChangeRequest.update({
+      where: { id: String(id) },
+      data: {
+        status: 'rejected',
+        reviewedAt: new Date(),
+        reviewedByAdminId: reviewedByAdminId || undefined,
+      },
+      select: { id: true, status: true, reviewedAt: true, reviewedByAdminId: true },
+    })
+
+    res.json({ request: updated })
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to reject request' })
+  }
+})
+
+router.post('/users/:id/clear-device', async (req, res) => {
+  try {
+    const { id } = req.params
+    const user = await prisma.user.update({
+      where: { id: String(id) },
+      data: { deviceId: null, deviceInfo: null, deviceBoundAt: null, sessionVersion: { increment: 1 } },
+      select: { id: true, deviceId: true, deviceInfo: true, deviceBoundAt: true },
+    })
+    res.json({ user })
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to clear device' })
   }
 })
 
