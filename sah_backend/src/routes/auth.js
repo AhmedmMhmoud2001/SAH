@@ -91,7 +91,7 @@ router.post('/register', async (req, res) => {
     })
     
     const token = jwt.sign(
-      { userId: user.id, sv: 0 },
+      { userId: user.id },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN }
     )
@@ -139,33 +139,58 @@ router.post('/login', async (req, res) => {
         return res.status(400).json({ error: 'deviceId is required', code: 'DEVICE_ID_REQUIRED' })
       }
 
-      // Single-device enforcement: bind on first login, otherwise require matching deviceId
-      if (!user.deviceId) {
-        await prisma.user.update({
-          where: { id: user.id },
-          data: {
+      const existingDevice = await prisma.userDevice.findUnique({
+        where: { userId_deviceId: { userId: user.id, deviceId } },
+        select: { id: true, revokedAt: true },
+      })
+      const isActiveExisting = !!existingDevice && !existingDevice.revokedAt
+
+      if (!isActiveExisting) {
+        const activeCount = await prisma.userDevice.count({
+          where: { userId: user.id, revokedAt: null },
+        })
+
+        if (activeCount >= 2) {
+          const pending = await prisma.deviceChangeRequest.findFirst({
+            where: { userId: user.id, status: 'pending' },
+            select: { id: true, createdAt: true },
+          })
+          return res.status(409).json({
+            error: 'Account is locked to another device',
+            code: 'DEVICE_LOCKED',
+            deviceLimit: 2,
+            hasPendingRequest: !!pending,
+            pendingRequestId: pending?.id || null,
+          })
+        }
+
+        await prisma.userDevice.upsert({
+          where: { userId_deviceId: { userId: user.id, deviceId } },
+          create: {
+            userId: user.id,
             deviceId,
             deviceInfo,
-            deviceBoundAt: new Date(),
+            boundAt: new Date(),
+          },
+          update: {
+            deviceInfo,
+            revokedAt: null,
+            boundAt: new Date(),
           },
         })
-      } else if (user.deviceId !== deviceId) {
-        const pending = await prisma.deviceChangeRequest.findFirst({
-          where: { userId: user.id, status: 'pending' },
-          select: { id: true, createdAt: true },
-        })
-        return res.status(409).json({
-          error: 'Account is locked to another device',
-          code: 'DEVICE_LOCKED',
-          deviceId: user.deviceId,
-          hasPendingRequest: !!pending,
-          pendingRequestId: pending?.id || null,
-        })
+
+        // Keep legacy fields for display/backward-compat (first device only)
+        if (!user.deviceId) {
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { deviceId, deviceInfo, deviceBoundAt: new Date() },
+          })
+        }
       }
     }
     
     const token = jwt.sign(
-      { userId: user.id, sv: user.sessionVersion || 0 },
+      { userId: user.id, ...(isStudent ? { deviceId } : {}) },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN }
     )
@@ -208,7 +233,7 @@ router.post('/device-change-requests', async (req, res) => {
 
     const user = await prisma.user.findUnique({
       where: { email: creds.email },
-      select: { id: true, deviceId: true, passwordHash: true },
+      select: { id: true, passwordHash: true },
     })
     if (!user) return res.status(401).json({ error: 'Invalid credentials' })
 
@@ -217,12 +242,19 @@ router.post('/device-change-requests', async (req, res) => {
 
     const userId = user.id
 
-    if (!user.deviceId) {
+    const activeCount = await prisma.userDevice.count({
+      where: { userId, revokedAt: null },
+    })
+    if (activeCount === 0) {
       return res.status(400).json({ error: 'No device is bound to this account yet', code: 'NO_DEVICE_BOUND' })
     }
 
     // If already on same device, no need for a request
-    if (user.deviceId && user.deviceId === newDeviceId) {
+    const alreadyActive = await prisma.userDevice.findUnique({
+      where: { userId_deviceId: { userId, deviceId: newDeviceId } },
+      select: { revokedAt: true },
+    })
+    if (alreadyActive && !alreadyActive.revokedAt) {
       return res.status(200).json({ message: 'Already on the registered device', code: 'ALREADY_REGISTERED' })
     }
 
@@ -406,11 +438,21 @@ export async function authenticate(req, res, next) {
 
     if (!user) return res.status(401).json({ error: 'User not found' })
 
-    // Token invalidation: if sessionVersion changes, old tokens must be rejected.
-    const tokenSv = Number(decoded?.sv ?? 0)
-    const dbSv = Number(user?.sessionVersion ?? 0)
-    if (!Number.isFinite(tokenSv) || tokenSv !== dbSv) {
-      return res.status(401).json({ error: 'Session expired', code: 'SESSION_EXPIRED' })
+    // Per-device enforcement (students only): token must belong to an active device.
+    const role = String(user.role || '').toLowerCase()
+    const isStudent = role === 'student'
+    if (isStudent) {
+      const tokenDeviceId = typeof decoded?.deviceId === 'string' ? decoded.deviceId.trim() : ''
+      if (!tokenDeviceId) {
+        return res.status(401).json({ error: 'Invalid token', code: 'DEVICE_ID_MISSING' })
+      }
+      const active = await prisma.userDevice.findUnique({
+        where: { userId_deviceId: { userId: user.id, deviceId: tokenDeviceId } },
+        select: { revokedAt: true },
+      })
+      if (!active || active.revokedAt) {
+        return res.status(401).json({ error: 'Session expired', code: 'DEVICE_REVOKED' })
+      }
     }
 
     // Extract permissions safely

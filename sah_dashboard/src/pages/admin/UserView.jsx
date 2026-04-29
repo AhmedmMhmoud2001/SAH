@@ -6,7 +6,9 @@ import {
   getAdminUser,
   getAdminRoles,
   getAdminUserDeviceChangeRequests,
+  getAdminUserDevices,
   getUserProgress,
+  revokeAdminUserDevice,
   rejectAdminDeviceChangeRequest,
   resolveAssetUrl,
   updateAdminUser,
@@ -32,6 +34,8 @@ export default function UserView() {
   const [loadingDeviceRequests, setLoadingDeviceRequests] = useState(true)
   const [deviceActionLoadingId, setDeviceActionLoadingId] = useState('')
   const [deviceError, setDeviceError] = useState('')
+  const [devices, setDevices] = useState([])
+  const [loadingDevices, setLoadingDevices] = useState(true)
 
   function getRoleLabel(roleName) {
     const normalized = String(roleName || '').trim().toLowerCase()
@@ -44,10 +48,11 @@ export default function UserView() {
     setErrorMessage('')
     setDeviceError('')
     try {
-      const [userData, progressData, deviceReqData] = await Promise.all([
+      const [userData, progressData, deviceReqData, devicesData] = await Promise.all([
         getAdminUser(id),
         getUserProgress(id),
         getAdminUserDeviceChangeRequests(id, { status: 'pending' }).catch(() => ({ requests: [] })),
+        getAdminUserDevices(id).catch(() => ({ devices: [] })),
       ])
       const rolesData = await getAdminRoles().catch(() => null)
       const roleList = Array.isArray(rolesData?.roles) ? rolesData.roles : []
@@ -61,6 +66,7 @@ export default function UserView() {
       })
       setProgress(Array.isArray(progressData) ? progressData : [])
       setDeviceRequests(Array.isArray(deviceReqData?.requests) ? deviceReqData.requests : [])
+      setDevices(Array.isArray(devicesData?.devices) ? devicesData.devices : [])
     } catch (error) {
       setUser(null)
       setProgress([])
@@ -69,6 +75,7 @@ export default function UserView() {
       setLoading(false)
       setLoadingProgress(false)
       setLoadingDeviceRequests(false)
+      setLoadingDevices(false)
     }
   }
 
@@ -138,6 +145,39 @@ export default function UserView() {
 
         <h3 style={{ marginBottom: '10px' }}>{t('device.title')}</h3>
         <div style={{ marginBottom: 18, color: 'var(--text-secondary, #64748b)' }}>
+          <div style={{ marginBottom: 10 }}>
+            <strong>{t('device.deviceId')}s:</strong>
+            {loadingDevices ? (
+              <span style={{ marginLeft: 8 }}>{t('msg.loading')}</span>
+            ) : devices.length === 0 ? (
+              <span style={{ marginLeft: 8 }}>-</span>
+            ) : (
+              <div style={{ marginTop: 8, display: 'grid', gap: 8 }}>
+                {devices.slice(0, 2).map((d) => (
+                  <div key={d.deviceId} style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+                    <span style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace' }}>
+                      {d.deviceId}
+                    </span>
+                    <span>({d.boundAt ? new Date(d.boundAt).toLocaleString() : '-'})</span>
+                    <button
+                      className="btn"
+                      onClick={async () => {
+                        setDeviceError('')
+                        try {
+                          await revokeAdminUserDevice(user.id, d.deviceId)
+                          await loadData()
+                        } catch (e) {
+                          setDeviceError(e?.response?.data?.error || t('msg.error'))
+                        }
+                      }}
+                    >
+                      {t('device.clear')}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
           <div><strong>{t('device.deviceId')}:</strong> {user.deviceId || '-'}</div>
           <div><strong>{t('device.boundAt')}:</strong> {user.deviceBoundAt ? new Date(user.deviceBoundAt).toLocaleString() : '-'}</div>
           <div><strong>{t('device.os')}:</strong> {deviceInfoParsed?.platform || '-'}</div>

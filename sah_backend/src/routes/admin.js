@@ -471,6 +471,25 @@ router.get('/users/:id', async (req, res) => {
   }
 })
 
+router.get('/users/:id/devices', async (req, res) => {
+  try {
+    const { id: userId } = req.params
+    const devices = await prisma.userDevice.findMany({
+      where: { userId: String(userId), revokedAt: null },
+      orderBy: { boundAt: 'desc' },
+      take: 10,
+      select: {
+        deviceId: true,
+        deviceInfo: true,
+        boundAt: true,
+      },
+    })
+    res.json({ devices })
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch devices' })
+  }
+})
+
 router.get('/users/:id/device-change-requests', async (req, res) => {
   try {
     const { id: userId } = req.params
@@ -543,16 +562,41 @@ router.post('/device-change-requests/:id/approve', async (req, res) => {
 
     const reviewedByAdminId = req.user?.userId ? String(req.user.userId) : null
 
+    const activeCount = await prisma.userDevice.count({
+      where: { userId: current.userId, revokedAt: null },
+    })
+    if (activeCount >= 2) {
+      return res.status(409).json({ error: 'Device limit reached (2)', code: 'DEVICE_LIMIT_REACHED' })
+    }
+
     const updated = await prisma.$transaction(async (tx) => {
-      await tx.user.update({
-        where: { id: current.userId },
-        data: {
+      await tx.userDevice.upsert({
+        where: { userId_deviceId: { userId: current.userId, deviceId: current.newDeviceId } },
+        create: {
+          userId: current.userId,
           deviceId: current.newDeviceId,
           deviceInfo: current.newDeviceInfo,
-          deviceBoundAt: new Date(),
-          sessionVersion: { increment: 1 },
+          boundAt: new Date(),
+        },
+        update: {
+          revokedAt: null,
+          deviceInfo: current.newDeviceInfo,
+          boundAt: new Date(),
         },
       })
+
+      // Keep legacy fields for display/backward-compat (only if empty)
+      const u = await tx.user.findUnique({
+        where: { id: current.userId },
+        select: { deviceId: true },
+      })
+      if (!u?.deviceId) {
+        await tx.user.update({
+          where: { id: current.userId },
+          data: { deviceId: current.newDeviceId, deviceInfo: current.newDeviceInfo, deviceBoundAt: new Date() },
+        })
+      }
+
       return await tx.deviceChangeRequest.update({
         where: { id: current.id },
         data: {
@@ -600,14 +644,34 @@ router.post('/device-change-requests/:id/reject', async (req, res) => {
 router.post('/users/:id/clear-device', async (req, res) => {
   try {
     const { id } = req.params
+    await prisma.userDevice.updateMany({
+      where: { userId: String(id), revokedAt: null },
+      data: { revokedAt: new Date() },
+    })
     const user = await prisma.user.update({
       where: { id: String(id) },
-      data: { deviceId: null, deviceInfo: null, deviceBoundAt: null, sessionVersion: { increment: 1 } },
+      data: { deviceId: null, deviceInfo: null, deviceBoundAt: null },
       select: { id: true, deviceId: true, deviceInfo: true, deviceBoundAt: true },
     })
-    res.json({ user })
+    res.json({ user, cleared: true })
   } catch (error) {
     res.status(500).json({ error: 'Failed to clear device' })
+  }
+})
+
+router.post('/users/:id/revoke-device', async (req, res) => {
+  try {
+    const { id } = req.params
+    const deviceId = String(req.body?.deviceId || '').trim()
+    if (!deviceId) return res.status(400).json({ error: 'deviceId is required' })
+
+    const updated = await prisma.userDevice.updateMany({
+      where: { userId: String(id), deviceId, revokedAt: null },
+      data: { revokedAt: new Date() },
+    })
+    res.json({ success: true, updated: updated.count })
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to revoke device' })
   }
 })
 

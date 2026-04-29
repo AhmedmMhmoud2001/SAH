@@ -225,6 +225,16 @@ export async function clearAdminUserDevice(userId) {
   return res.data
 }
 
+export async function getAdminUserDevices(userId) {
+  const res = await api.get(`/admin/users/${userId}/devices`)
+  return res.data
+}
+
+export async function revokeAdminUserDevice(userId, deviceId) {
+  const res = await api.post(`/admin/users/${userId}/revoke-device`, { deviceId })
+  return res.data
+}
+
 export async function getUserProgress(userId) {
   const res = await api.get(`/admin/users/${userId}/progress`)
   return res.data
