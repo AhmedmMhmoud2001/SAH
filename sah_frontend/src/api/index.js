@@ -1,3 +1,5 @@
+import { getToken as getSahToken, saveAuthSession, clearAuthSession } from '../lib/auth.js'
+
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 
 function apiOrigin() {
@@ -6,7 +8,7 @@ function apiOrigin() {
 
 function getToken() {
   try {
-    return localStorage.getItem('token')
+    return getSahToken()
   } catch {
     return null
   }
@@ -108,11 +110,8 @@ export async function fetchAuthBlob(path) {
 
 export function logout() {
   try {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
-  } catch {
-    // ignore
-  }
+    clearAuthSession()
+  } catch {}
 }
 
 export async function login({ email, password }) {
@@ -126,8 +125,7 @@ export async function login({ email, password }) {
     },
   })
   if (data?.token) {
-    localStorage.setItem('token', data.token)
-    localStorage.setItem('user', JSON.stringify(data.user || null))
+    saveAuthSession({ token: data.token, user: data.user || null })
   }
   return data
 }
@@ -147,8 +145,7 @@ export async function requestDeviceChange({ email, password }) {
 export async function register({ name, email, phone, password }) {
   const data = await requestAuth('/auth/register', { method: 'POST', body: { name, email, phone, password } })
   if (data?.token) {
-    localStorage.setItem('token', data.token)
-    localStorage.setItem('user', JSON.stringify(data.user || null))
+    saveAuthSession({ token: data.token, user: data.user || null })
   }
   return data
 }

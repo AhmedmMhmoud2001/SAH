@@ -12,6 +12,7 @@ import './home.css'
 import { useI18n } from '../i18n/I18nProvider.jsx'
 import { useEffect, useState } from 'react'
 import { getHome } from '../api/index.js'
+import { getToken } from '../lib/auth.js'
 
 export default function Home() {
   const { dir, lang } = useI18n()
@@ -48,7 +49,7 @@ export default function Home() {
   useEffect(() => {
     function read() {
       try {
-        setIsAuthed(!!localStorage.getItem('token'))
+        setIsAuthed(!!getToken())
       } catch {
         setIsAuthed(false)
       }

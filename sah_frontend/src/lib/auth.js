@@ -1,11 +1,11 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
 
 export function getToken() {
-  return localStorage.getItem('sah_token') || localStorage.getItem('token')
+  return localStorage.getItem('sah_token')
 }
 
 export function getStoredUser() {
-  const raw = localStorage.getItem('sah_user') || localStorage.getItem('user')
+  const raw = localStorage.getItem('sah_user')
   if (!raw) return null
   try {
     return JSON.parse(raw)
@@ -17,20 +17,16 @@ export function getStoredUser() {
 export function saveAuthSession({ token, user }) {
   if (token) {
     localStorage.setItem('sah_token', token)
-    localStorage.setItem('token', token)
   }
   if (user) {
     const serialized = JSON.stringify(user)
     localStorage.setItem('sah_user', serialized)
-    localStorage.setItem('user', serialized)
   }
 }
 
 export function clearAuthSession() {
   localStorage.removeItem('sah_token')
   localStorage.removeItem('sah_user')
-  localStorage.removeItem('token')
-  localStorage.removeItem('user')
 }
 
 function isExpiredSession(response, result) {

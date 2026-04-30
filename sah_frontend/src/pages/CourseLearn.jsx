@@ -7,6 +7,7 @@ import { useI18n } from '../i18n/I18nProvider.jsx'
 
 import { getCourse, getLessons, getProgress, markLessonComplete, logout } from '../api/index.js'
 import { getEnrollments } from '../api/index.js'
+import { getToken } from '../lib/auth.js'
 
 function useCourseIdFromUrl() {
   const pathname =
@@ -52,7 +53,7 @@ export default function CourseLearn() {
       try {
         // Require enrollment with paid order (or manual enrollment without orderId).
         try {
-          const token = localStorage.getItem('token')
+          const token = getToken()
           if (!token) {
             window.location.assign(`/course/${courseId}`)
             return

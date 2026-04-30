@@ -5,6 +5,7 @@ import './home.css'
 import './auth.css'
 import { useI18n } from '../i18n/I18nProvider.jsx'
 import { checkout as apiCheckout, getCourse, getOrderStatus, validateCoupon, logout } from '../api/index.js'
+import { getToken } from '../lib/auth.js'
 
 function readCourseId() {
   try {
@@ -29,13 +30,7 @@ export default function Checkout() {
   const [checking, setChecking] = useState(false)
 
   useEffect(() => {
-    const token = (() => {
-      try {
-        return localStorage.getItem('token')
-      } catch {
-        return null
-      }
-    })()
+    const token = getToken()
     if (!token) {
       window.location.assign('/login')
       return

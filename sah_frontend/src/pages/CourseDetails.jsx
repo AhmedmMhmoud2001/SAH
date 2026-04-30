@@ -6,6 +6,7 @@ import './course-details.css'
 import { useI18n } from '../i18n/I18nProvider.jsx'
 
 import { getCourse, getEnrollments, resolveAssetUrl } from '../api/index.js'
+import { getToken } from '../lib/auth.js'
 import clockIcon from '../assets/img_home/tabler_clock-filled.png'
 import studentsIcon from '../assets/img_home/mdi_account-student.png'
 import featureCert from '../assets/img_home/Group (1).png'
@@ -108,13 +109,7 @@ export default function CourseDetails() {
     let cancelled = false
     ;(async () => {
       try {
-        const token = (() => {
-          try {
-            return localStorage.getItem('token')
-          } catch {
-            return null
-          }
-        })()
+        const token = getToken()
         if (!token) {
           if (!cancelled) setIsEnrolled(false)
           return
@@ -234,13 +229,7 @@ export default function CourseDetails() {
                   disabled={enrolling}
                   onClick={async () => {
                     if (enrolling) return
-                    const token = (() => {
-                      try {
-                        return localStorage.getItem('token')
-                      } catch {
-                        return null
-                      }
-                    })()
+                    const token = getToken()
                     if (!token) {
                       window.location.assign('/login')
                       return
