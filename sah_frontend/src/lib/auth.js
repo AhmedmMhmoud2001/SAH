@@ -1,3 +1,5 @@
+import { getDeviceIdForRequest, getDeviceInfo } from './deviceId.js'
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
 
 export function getToken() {
@@ -47,10 +49,15 @@ export async function registerUser(payload) {
 }
 
 export async function loginUser(payload) {
+  const body = {
+    ...payload,
+    deviceId: payload?.deviceId ?? getDeviceIdForRequest(),
+    deviceInfo: payload?.deviceInfo ?? getDeviceInfo(),
+  }
   const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(body),
   })
   const result = await response.json().catch(() => ({}))
   if (!response.ok) throw new Error(result.error || 'Failed to login.')

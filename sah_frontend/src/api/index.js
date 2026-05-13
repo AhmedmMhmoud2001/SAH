@@ -1,4 +1,5 @@
 import { getToken as getSahToken, saveAuthSession, clearAuthSession } from '../lib/auth.js'
+import { getDeviceIdForRequest, getDeviceInfo } from '../lib/deviceId.js'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 
@@ -11,40 +12,6 @@ function getToken() {
     return getSahToken()
   } catch {
     return null
-  }
-}
-
-function getOrCreateDeviceId() {
-  try {
-    const key = 'deviceId'
-    const existing = localStorage.getItem(key)
-    if (existing && String(existing).trim()) return String(existing).trim()
-    const id = (typeof crypto !== 'undefined' && crypto.randomUUID)
-      ? crypto.randomUUID()
-      : `${Date.now()}-${Math.random().toString(16).slice(2)}`
-    localStorage.setItem(key, id)
-    return id
-  } catch {
-    return `${Date.now()}-${Math.random().toString(16).slice(2)}`
-  }
-}
-
-function getDeviceInfo() {
-  try {
-    return {
-      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
-      platform: typeof navigator !== 'undefined' ? (navigator.platform || '') : '',
-      language: typeof navigator !== 'undefined' ? (navigator.language || '') : '',
-      timezone: (() => {
-        try {
-          return Intl.DateTimeFormat().resolvedOptions().timeZone || ''
-        } catch {
-          return ''
-        }
-      })(),
-    }
-  } catch {
-    return {}
   }
 }
 
@@ -120,7 +87,7 @@ export async function login({ email, password }) {
     body: {
       email,
       password,
-      deviceId: getOrCreateDeviceId(),
+      deviceId: getDeviceIdForRequest(),
       deviceInfo: getDeviceInfo(),
     },
   })
@@ -136,7 +103,7 @@ export async function requestDeviceChange({ email, password }) {
     body: {
       email,
       password,
-      deviceId: getOrCreateDeviceId(),
+      deviceId: getDeviceIdForRequest(),
       deviceInfo: getDeviceInfo(),
     },
   })
