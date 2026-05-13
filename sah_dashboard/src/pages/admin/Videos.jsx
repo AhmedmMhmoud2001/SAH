@@ -6,10 +6,10 @@ import { getAdminCourses, getAdminLessons, deleteAdminLesson } from '../../api'
 
 function apiOrigin() {
   try {
-    const base = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+    const base = import.meta.env.VITE_API_URL || 'https://sah.nodeteam.site/api'
     return new URL(base).origin
   } catch {
-    return 'http://localhost:3000'
+    return 'https://sah.nodeteam.site'
   }
 }
 

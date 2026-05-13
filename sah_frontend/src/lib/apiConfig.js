@@ -62,7 +62,7 @@ export function getResolvedApiUrl() {
   }
 
   if (dev) {
-    return 'http://localhost:3000/api'
+    return 'https://sah.nodeteam.site/api'
   }
   return `${PUBLIC_PRODUCTION_ORIGIN}/api`
 }
@@ -95,7 +95,7 @@ export function getResolvedApiBaseUrl() {
   }
 
   if (dev) {
-    return 'http://localhost:3000'
+    return 'https://sah.nodeteam.site'
   }
   return PUBLIC_PRODUCTION_ORIGIN
 }
