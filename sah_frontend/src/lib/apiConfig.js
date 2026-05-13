@@ -31,20 +31,22 @@ export function getResolvedApiUrl() {
   const raw = import.meta.env.VITE_API_URL
   const trimmed = typeof raw === 'string' ? raw.trim() : ''
   const prod = import.meta.env.PROD
+  const dev = import.meta.env.DEV
   const onLoopbackPage = isBrowserOnLoopbackHost()
 
   if (trimmed) {
+    // Production app on the public internet must not call loopback (Chrome blocks it).
     if (prod && !onLoopbackPage && isLocalApiUrl(trimmed)) {
       return `${PUBLIC_PRODUCTION_ORIGIN}/api`
     }
     return trimmed
   }
 
-  if (prod && !onLoopbackPage) {
-    return `${PUBLIC_PRODUCTION_ORIGIN}/api`
+  // `vite dev` only → local backend. Every `vite build` bundle → public API (never default localhost).
+  if (dev) {
+    return 'http://localhost:3000/api'
   }
-
-  return 'http://localhost:3000/api'
+  return `${PUBLIC_PRODUCTION_ORIGIN}/api`
 }
 
 /**
@@ -54,6 +56,7 @@ export function getResolvedApiBaseUrl() {
   const raw = import.meta.env.VITE_API_BASE_URL
   const trimmed = typeof raw === 'string' ? raw.trim() : ''
   const prod = import.meta.env.PROD
+  const dev = import.meta.env.DEV
   const onLoopbackPage = isBrowserOnLoopbackHost()
 
   if (trimmed) {
@@ -64,9 +67,8 @@ export function getResolvedApiBaseUrl() {
     return normalized
   }
 
-  if (prod && !onLoopbackPage) {
-    return PUBLIC_PRODUCTION_ORIGIN
+  if (dev) {
+    return 'http://localhost:3000'
   }
-
-  return 'http://localhost:3000'
+  return PUBLIC_PRODUCTION_ORIGIN
 }
