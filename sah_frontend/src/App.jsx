@@ -15,6 +15,7 @@ import Settings from './pages/Settings.jsx'
 import Notifications from './pages/Notifications.jsx'
 import Profile from './pages/Profile.jsx'
 import { getStoredUser } from './lib/auth.js'
+import { getDashboardBaseUrl } from './lib/dashboardUrl.js'
 
 function getPathname() {
   return typeof window !== 'undefined' ? window.location.pathname.toLowerCase() : '/'
@@ -22,7 +23,7 @@ function getPathname() {
 
 export default function App() {
   const [path, setPath] = useState(getPathname)
-  const dashboardBaseUrl = import.meta.env.VITE_DASHBOARD_BASE_URL || 'http://localhost:5174'
+  const dashboardBaseUrl = getDashboardBaseUrl()
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -69,13 +70,15 @@ export default function App() {
     const role = String(user?.role || '').toLowerCase()
     const isAdmin = role === 'admin'
 
-    if (currentPath === '/admin') {
-      window.location.href = `${dashboardBaseUrl}/admin`
-      return
-    }
+    if (dashboardBaseUrl) {
+      if (currentPath === '/admin') {
+        window.location.href = `${dashboardBaseUrl}/admin`
+        return
+      }
 
-    if (currentPath === '/' && isAdmin) {
-      window.location.href = `${dashboardBaseUrl}/admin`
+      if (currentPath === '/' && isAdmin) {
+        window.location.href = `${dashboardBaseUrl}/admin`
+      }
     }
   }, [dashboardBaseUrl, path])
 

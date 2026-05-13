@@ -1,7 +1,4 @@
-/**
- * Fallback when env + injected index script are missing (should not happen after `vite build`).
- */
-const PUBLIC_PRODUCTION_ORIGIN = 'https://sah.nodeteam.site'
+import { SAH_PUBLIC_ORIGIN } from './sahPublicOrigin.js'
 
 function isLoopbackHostname(hostname) {
   if (!hostname) return false
@@ -36,17 +33,16 @@ function readInjectedApiBase() {
 
 /**
  * Full API base including `/api` suffix (e.g. https://host/api).
- * Order: index.html inject (build) → Vite env → dev localhost / prod public.
+ * Order: index.html inject → Vite env → public origin.
  */
 export function getResolvedApiUrl() {
   const prod = import.meta.env.PROD
-  const dev = import.meta.env.DEV
   const onLoopbackPage = isBrowserOnLoopbackHost()
 
   const injected = readInjectedApiUrl()
   if (injected) {
     if (prod && !onLoopbackPage && isLocalApiUrl(injected)) {
-      return `${PUBLIC_PRODUCTION_ORIGIN}/api`
+      return `${SAH_PUBLIC_ORIGIN}/api`
     }
     return injected
   }
@@ -56,15 +52,12 @@ export function getResolvedApiUrl() {
 
   if (trimmed) {
     if (prod && !onLoopbackPage && isLocalApiUrl(trimmed)) {
-      return `${PUBLIC_PRODUCTION_ORIGIN}/api`
+      return `${SAH_PUBLIC_ORIGIN}/api`
     }
     return trimmed
   }
 
-  if (dev) {
-    return 'https://sah.nodeteam.site/api'
-  }
-  return `${PUBLIC_PRODUCTION_ORIGIN}/api`
+  return `${SAH_PUBLIC_ORIGIN}/api`
 }
 
 /**
@@ -72,13 +65,12 @@ export function getResolvedApiUrl() {
  */
 export function getResolvedApiBaseUrl() {
   const prod = import.meta.env.PROD
-  const dev = import.meta.env.DEV
   const onLoopbackPage = isBrowserOnLoopbackHost()
 
   const injected = readInjectedApiBase()
   if (injected) {
     if (prod && !onLoopbackPage && isLocalApiUrl(`${injected}/`)) {
-      return PUBLIC_PRODUCTION_ORIGIN
+      return SAH_PUBLIC_ORIGIN
     }
     return injected
   }
@@ -89,13 +81,10 @@ export function getResolvedApiBaseUrl() {
   if (trimmed) {
     const normalized = trimmed.replace(/\/$/, '')
     if (prod && !onLoopbackPage && isLocalApiUrl(normalized)) {
-      return PUBLIC_PRODUCTION_ORIGIN
+      return SAH_PUBLIC_ORIGIN
     }
     return normalized
   }
 
-  if (dev) {
-    return 'https://sah.nodeteam.site'
-  }
-  return PUBLIC_PRODUCTION_ORIGIN
+  return SAH_PUBLIC_ORIGIN
 }
