@@ -1,6 +1,7 @@
 import { getDeviceIdForRequest, getDeviceInfo } from './deviceId.js'
+import { getResolvedApiBaseUrl } from './apiConfig.js'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
+const API_BASE_URL = getResolvedApiBaseUrl()
 
 export function getToken() {
   return localStorage.getItem('sah_token')

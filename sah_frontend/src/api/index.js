@@ -1,7 +1,8 @@
 import { getToken as getSahToken, saveAuthSession, clearAuthSession } from '../lib/auth.js'
 import { getDeviceIdForRequest, getDeviceInfo } from '../lib/deviceId.js'
+import { getResolvedApiUrl } from '../lib/apiConfig.js'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+const API_URL = getResolvedApiUrl()
 
 function apiOrigin() {
   return API_URL.replace(/\/api\/?$/, '')
