@@ -56,7 +56,7 @@ export default function CourseForm({ mode, initialData }) {
         navigate(`/admin/courses/${created.id}`)
       }
     } catch (e2) {
-      alert('Error saving course')
+      alert(t('courses.saveFailed'))
     } finally {
       setSaving(false)
     }
@@ -70,22 +70,22 @@ export default function CourseForm({ mode, initialData }) {
 
       <form onSubmit={handleSubmit} className="modal" style={{ maxWidth: 900 }}>
         <div className="form-group">
-          <label>{t('courses.titleAr') || 'Title (Arabic)'}</label>
+          <label>{t('courses.titleAr')}</label>
           <input type="text" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} required />
         </div>
         <div className="form-group">
-          <label>{t('courses.titleEn') || 'Title (English)'}</label>
+          <label>{t('courses.titleEn')}</label>
           <input type="text" value={formData.enTitle} onChange={(e) => setFormData({ ...formData, enTitle: e.target.value })} />
         </div>
         <div className="form-group">
-          <label>{t('courses.code') || 'Code'}</label>
+          <label>{t('courses.code')}</label>
           <input type="text" value={formData.code} onChange={(e) => setFormData({ ...formData, code: e.target.value })} required />
         </div>
         <div className="form-group">
-          <label>{t('courses.image') || 'Course image (upload)'}</label>
+          <label>{t('courses.image')}</label>
           <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] ?? null)} />
           {formData.imageUrl ? (
-            <div style={{ marginTop: 8, fontSize: 12, opacity: 0.8 }}>Current: {formData.imageUrl}</div>
+            <div style={{ marginTop: 8, fontSize: 12, opacity: 0.8 }}>{t('courses.currentImage', { url: formData.imageUrl })}</div>
           ) : null}
         </div>
 
@@ -97,53 +97,53 @@ export default function CourseForm({ mode, initialData }) {
               checked={!!formData.isFeatured}
               onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })}
             />
-            <span>{t('courses.featured') || 'Featured course'}</span>
+            <span>{t('courses.featured')}</span>
           </label>
         </div>
 
         <div className="form-group">
-          <label>{t('courses.shortDescAr') || 'Short Description (Arabic)'}</label>
+          <label>{t('courses.shortDescAr')}</label>
           <textarea value={formData.shortDesc} onChange={(e) => setFormData({ ...formData, shortDesc: e.target.value })} rows={3} />
         </div>
         <div className="form-group">
-          <label>{t('courses.shortDescEn') || 'Short Description (English)'}</label>
+          <label>{t('courses.shortDescEn')}</label>
           <textarea value={formData.enShortDesc} onChange={(e) => setFormData({ ...formData, enShortDesc: e.target.value })} rows={3} />
         </div>
         <div className="form-group">
-          <label>{t('courses.longDescAr') || 'Long Description (Arabic)'}</label>
+          <label>{t('courses.longDescAr')}</label>
           <textarea value={formData.longDesc} onChange={(e) => setFormData({ ...formData, longDesc: e.target.value })} rows={4} />
         </div>
         <div className="form-group">
-          <label>{t('courses.longDescEn') || 'Long Description (English)'}</label>
+          <label>{t('courses.longDescEn')}</label>
           <textarea value={formData.enLongDesc} onChange={(e) => setFormData({ ...formData, enLongDesc: e.target.value })} rows={4} />
         </div>
 
         <div className="form-group">
-          <label>{t('courses.price') || 'Price'}</label>
+          <label>{t('courses.price')}</label>
           <input type="number" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} required />
         </div>
         <div className="form-group">
-          <label>{t('courses.duration') || 'Duration'}</label>
+          <label>{t('courses.duration')}</label>
           <input type="text" value={formData.duration} onChange={(e) => setFormData({ ...formData, duration: e.target.value })} />
         </div>
         <div className="form-group">
-          <label>{t('courses.level') || 'Level'}</label>
+          <label>{t('courses.level')}</label>
           <select value={formData.level || ''} onChange={(e) => setFormData({ ...formData, level: e.target.value })}>
-            <option value="">{t('courses.selectLevel') || (t('actions.select') || 'اختر')}</option>
-            <option value="Beginner">{t('level.beginner') || 'Beginner'}</option>
-            <option value="Intermediate">{t('level.intermediate') || 'Intermediate'}</option>
-            <option value="Advanced">{t('level.advanced') || 'Advanced'}</option>
+            <option value="">{t('courses.selectLevel')}</option>
+            <option value="Beginner">{t('level.beginner')}</option>
+            <option value="Intermediate">{t('level.intermediate')}</option>
+            <option value="Advanced">{t('level.advanced')}</option>
           </select>
         </div>
 
         <div className="form-group">
-          <label>Curriculum (Arabic) — modules (title + description)</label>
+          <label>{t('courses.curriculumArLabel')}</label>
           <div style={{ display: 'grid', gap: 10 }}>
             {(formData.curriculumDetails || []).map((m, idx) => (
               <div key={idx} style={{ border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, padding: 10 }}>
                 <input
                   type="text"
-                  placeholder="Title (AR)"
+                  placeholder={t('courses.moduleTitleArPh')}
                   value={m?.title || ''}
                   onChange={(e) => {
                     const next = [...(formData.curriculumDetails || [])]
@@ -152,7 +152,7 @@ export default function CourseForm({ mode, initialData }) {
                   }}
                 />
                 <textarea
-                  placeholder="Description (AR)"
+                  placeholder={t('courses.moduleDescArPh')}
                   value={m?.description || ''}
                   onChange={(e) => {
                     const next = [...(formData.curriculumDetails || [])]
@@ -172,7 +172,7 @@ export default function CourseForm({ mode, initialData }) {
                       setFormData({ ...formData, curriculumDetails: next })
                     }}
                   >
-                    Remove
+                    {t('courses.removeModule')}
                   </button>
                 </div>
               </div>
@@ -188,19 +188,19 @@ export default function CourseForm({ mode, initialData }) {
                   })
                 }
               >
-                + Add module (AR)
+                {t('courses.addModuleAr')}
               </button>
             </div>
           </div>
         </div>
         <div className="form-group">
-          <label>Curriculum (English) — modules (title + description)</label>
+          <label>{t('courses.curriculumEnLabel')}</label>
           <div style={{ display: 'grid', gap: 10 }}>
             {(formData.enCurriculumDetails || []).map((m, idx) => (
               <div key={idx} style={{ border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, padding: 10 }}>
                 <input
                   type="text"
-                  placeholder="Title (EN)"
+                  placeholder={t('courses.moduleTitleEnPh')}
                   value={m?.title || ''}
                   onChange={(e) => {
                     const next = [...(formData.enCurriculumDetails || [])]
@@ -209,7 +209,7 @@ export default function CourseForm({ mode, initialData }) {
                   }}
                 />
                 <textarea
-                  placeholder="Description (EN)"
+                  placeholder={t('courses.moduleDescEnPh')}
                   value={m?.description || ''}
                   onChange={(e) => {
                     const next = [...(formData.enCurriculumDetails || [])]
@@ -229,7 +229,7 @@ export default function CourseForm({ mode, initialData }) {
                       setFormData({ ...formData, enCurriculumDetails: next })
                     }}
                   >
-                    Remove
+                    {t('courses.removeModule')}
                   </button>
                 </div>
               </div>
@@ -245,35 +245,35 @@ export default function CourseForm({ mode, initialData }) {
                   })
                 }
               >
-                + Add module (EN)
+                {t('courses.addModuleEn')}
               </button>
             </div>
           </div>
         </div>
         <div className="form-group">
-          <label>Audience (Arabic) — one per line</label>
+          <label>{t('courses.audienceArLabel')}</label>
           <textarea value={(formData.audience || []).join('\n')} onChange={(e) => setFormData({ ...formData, audience: splitLines(e.target.value) })} rows={3} />
         </div>
         <div className="form-group">
-          <label>Audience (English) — one per line</label>
+          <label>{t('courses.audienceEnLabel')}</label>
           <textarea value={(formData.enAudience || []).join('\n')} onChange={(e) => setFormData({ ...formData, enAudience: splitLines(e.target.value) })} rows={3} />
         </div>
 
         <div className="form-group">
-          <label>Certificate text (Arabic) (per-course)</label>
+          <label>{t('courses.certTextArLabel')}</label>
           <textarea value={formData.certificateText} onChange={(e) => setFormData({ ...formData, certificateText: e.target.value })} rows={3} />
         </div>
         <div className="form-group">
-          <label>Certificate text (English) (per-course)</label>
+          <label>{t('courses.certTextEnLabel')}</label>
           <textarea value={formData.enCertificateText} onChange={(e) => setFormData({ ...formData, enCertificateText: e.target.value })} rows={3} />
         </div>
 
         <div className="form-actions">
           <button type="button" className="btn btn-secondary" onClick={() => navigate('/admin/courses')}>
-            Cancel
+            {t('actions.cancel')}
           </button>
           <button type="submit" className="btn btn-primary" disabled={saving}>
-            {saving ? 'Saving...' : 'Save'}
+            {saving ? t('courses.saving') : t('actions.save')}
           </button>
         </div>
       </form>

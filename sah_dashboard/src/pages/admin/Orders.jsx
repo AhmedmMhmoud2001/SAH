@@ -5,7 +5,7 @@ import { getAdminOrders, updateAdminOrder, createAdminRefund } from '../../api'
 import './AdminPages.css'
 
 export default function Orders() {
-  const { t, isRTL } = useI18n()
+  const { t } = useI18n()
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
   const [statusFilter, setStatusFilter] = useState('')
@@ -97,19 +97,19 @@ export default function Orders() {
         <div className="ordersHeader__meta">
           <h1 className="ordersHeader__title">{ordersTitle}</h1>
           <p className="ordersHeader__sub">
-            {isRTL ? 'متابعة الطلبات وحالات الدفع والاسترجاع.' : 'Track orders, payments, and refunds.'}
+            {t('orders.subtitle')}
           </p>
         </div>
         <div className="ordersHeader__actions">
           <button className="btn btn-secondary" onClick={loadOrders} disabled={loading}>
-            <RefreshCcw size={18} /> {loading ? t('msg.loading') : (isRTL ? 'تحديث' : 'Refresh')}
+            <RefreshCcw size={18} /> {loading ? t('msg.loading') : t('orders.refresh')}
           </button>
         </div>
       </div>
 
       <div className="stats-grid" style={{ marginBottom: 18 }}>
         <div className="stat-card">
-          <p className="stat-card-title">{isRTL ? 'إجمالي الطلبات' : 'Total orders'}</p>
+          <p className="stat-card-title">{t('orders.totalOrders')}</p>
           <p className="stat-card-value">{kpis.total}</p>
           <div className="stat-card-icon" style={{ color: 'var(--primary)' }}><BadgeDollarSign size={32} /></div>
         </div>
@@ -137,7 +137,7 @@ export default function Orders() {
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder={isRTL ? 'بحث برقم الطلب / الاسم / البريد / الكوبون' : 'Search by order id / name / email / coupon'}
+              placeholder={t('orders.searchPlaceholder')}
             />
           </div>
           <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
@@ -150,7 +150,7 @@ export default function Orders() {
         </div>
         <div className="ordersFilters__right">
           <div className="ordersRevenuePill">
-            <span className="ordersRevenuePill__label">{isRTL ? 'إيرادات (مدفوع)' : 'Revenue (paid)'}</span>
+            <span className="ordersRevenuePill__label">{t('orders.revenuePaid')}</span>
             <span className="ordersRevenuePill__value">{kpis.revenue.toFixed(2)} {kpis.currency}</span>
           </div>
         </div>
@@ -207,7 +207,7 @@ export default function Orders() {
             <div className="order-details-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '20px' }}>
               <div>
                 <p><strong>{t('orders.customer')}:</strong> {selectedOrder.user?.name}</p>
-                <p><strong>{isRTL ? 'البريد الإلكتروني' : 'Email'}:</strong> {selectedOrder.user?.email}</p>
+                <p><strong>{t('orders.email')}:</strong> {selectedOrder.user?.email}</p>
                 <p><strong>{t('orders.status')}:</strong> <span className={`badge ${getStatusBadge(selectedOrder.status)}`}>{t(`orders.status.${selectedOrder.status}`) || selectedOrder.status}</span></p>
               </div>
               <div>
@@ -221,7 +221,7 @@ export default function Orders() {
               {selectedOrder.enrollments?.map(e => (
                 <li key={e.id} style={{ padding: '10px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between' }}>
                   <span>{e.course?.title}</span>
-                  <span>{isRTL ? `${e.course?.price} ر.س` : `${e.course?.price} SAR`}</span>
+                  <span>{`${e.course?.price} ${t('student.currencySuffix')}`}</span>
                 </li>
               ))}
             </ul>

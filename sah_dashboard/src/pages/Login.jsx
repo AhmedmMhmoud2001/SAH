@@ -6,7 +6,7 @@ import './pages.css'
 import sahLogo from '../assets/Frame 4 (1).png'
 
 export default function Login() {
-  const { t, isRTL } = useI18n()
+  const { t } = useI18n()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -28,7 +28,7 @@ export default function Login() {
         navigate('/app')
       }
     } catch (err) {
-      setError(err.response?.data?.error || (isRTL ? 'فشل تسجيل الدخول' : 'Login failed'))
+      setError(err.response?.data?.error || t('auth.loginFailed'))
     } finally {
       setLoading(false)
     }
@@ -38,40 +38,40 @@ export default function Login() {
     <div className="auth-page">
       <div className="auth-container">
         <div className="auth-brand">
-          <img className="auth-brand__logo" src={sahLogo} alt="SAH Academy" />
+          <img className="auth-brand__logo" src={sahLogo} alt={t('app.name')} />
           <h1 className="auth-brand__title">{t('app.name')}</h1>
-          <p className="auth-brand__sub">{isRTL ? 'تعلّم المحاسبة و Odoo' : 'Learn Accounting & Odoo'}</p>
+          <p className="auth-brand__sub">{t('auth.tagline')}</p>
         </div>
         
         <form className="auth-form" onSubmit={handleSubmit}>
-          <h2>{isRTL ? 'تسجيل الدخول' : 'Sign In'}</h2>
+          <h2>{t('auth.signIn')}</h2>
           
           {error && <div className="error">{error}</div>}
           
           <div className="form-group">
-            <label>{isRTL ? 'البريد الإلكتروني' : 'Email'}</label>
+            <label>{t('auth.email')}</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder={isRTL ? 'اكتب بريدك الإلكتروني' : 'Enter your email'}
+              placeholder={t('auth.emailPlaceholder')}
               required
             />
           </div>
           
           <div className="form-group">
-            <label>{isRTL ? 'كلمة المرور' : 'Password'}</label>
+            <label>{t('auth.password')}</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder={isRTL ? 'اكتب كلمة المرور' : 'Enter your password'}
+              placeholder={t('auth.passwordPlaceholder')}
               required
             />
           </div>
           
           <button type="submit" disabled={loading}>
-            {loading ? (isRTL ? 'جاري تسجيل الدخول...' : 'Signing in...') : (isRTL ? 'تسجيل الدخول' : 'Sign In')}
+            {loading ? t('auth.signingIn') : t('auth.signIn')}
           </button>
           
           {/* Dashboard does not allow self-signup */}

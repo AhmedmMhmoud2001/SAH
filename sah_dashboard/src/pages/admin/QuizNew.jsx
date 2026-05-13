@@ -78,7 +78,7 @@ export default function QuizNew() {
   return (
     <div className="admin-page">
       <div className="page-header">
-        <h1>{t('actions.add')} Quiz</h1>
+        <h1>{t('quizzes.newQuizTitle')}</h1>
         <button className="btn" type="button" onClick={() => navigate('/admin/quizzes')}>
           {t('actions.cancel')}
         </button>
@@ -86,16 +86,16 @@ export default function QuizNew() {
 
       <form className="card" onSubmit={onSubmit}>
         <div className="form-group">
-          <label>Type</label>
+          <label>{t('quizzes.field.type')}</label>
           <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })} required>
-            <option value="lesson">lesson</option>
-            <option value="final">final</option>
+            <option value="lesson">{t('quizzes.type.lesson')}</option>
+            <option value="final">{t('quizzes.type.final')}</option>
           </select>
         </div>
         <div className="form-group">
-          <label>Course</label>
+          <label>{t('videos.course')}</label>
           <select value={form.courseId} onChange={(e) => setForm({ ...form, courseId: e.target.value })}>
-            <option value="">Select course</option>
+            <option value="">{t('quizzes.selectCoursePh')}</option>
             {courses.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.title}
@@ -105,9 +105,9 @@ export default function QuizNew() {
         </div>
         {form.type === 'lesson' ? (
           <div className="form-group">
-            <label>Lesson</label>
+            <label>{t('quizzes.lesson')}</label>
             <select value={form.lessonId} onChange={(e) => setForm({ ...form, lessonId: e.target.value })} required>
-              <option value="">Select lesson</option>
+              <option value="">{t('quizzes.selectLessonPh')}</option>
               {lessons.map((l) => (
                 <option key={l.id} value={l.id}>
                   {l.title}
@@ -117,11 +117,11 @@ export default function QuizNew() {
           </div>
         ) : null}
         <div className="form-group">
-          <label>Title (AR)</label>
+          <label>{t('courses.titleAr')}</label>
           <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
         </div>
         <div className="form-group">
-          <label>Title (EN)</label>
+          <label>{t('courses.titleEn')}</label>
           <input value={form.enTitle} onChange={(e) => setForm({ ...form, enTitle: e.target.value })} />
         </div>
 

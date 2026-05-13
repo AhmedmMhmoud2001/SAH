@@ -31,7 +31,7 @@ function ensureStringArray(input) {
 
 export default function Courses() {
 
-  const { t, isRTL } = useI18n()
+  const { t } = useI18n()
   const navigate = useNavigate()
   const [courses, setCourses] = useState([])
   const [loading, setLoading] = useState(true)
@@ -40,9 +40,9 @@ export default function Courses() {
     const v = String(raw || '').trim()
     if (!v) return '—'
     const key = v.toLowerCase()
-    if (key === 'advanced') return isRTL ? t('level.advanced') : 'Advanced'
-    if (key === 'intermediate') return isRTL ? t('level.intermediate') : 'Intermediate'
-    if (key === 'beginner') return isRTL ? t('level.beginner') : 'Beginner'
+    if (key === 'advanced' || v === 'متقدم') return t('level.advanced')
+    if (key === 'intermediate' || v === 'متوسط') return t('level.intermediate')
+    if (key === 'beginner' || v === 'مبتدئ') return t('level.beginner')
     return v
   }
 
@@ -96,7 +96,7 @@ export default function Courses() {
             <th>{t('courses.title')}</th>
             <th>{t('courses.price')}</th>
             <th>{t('courses.duration')}</th>
-            <th>{isRTL ? 'الطلاب' : 'Students'}</th>
+            <th>{t('courses.students')}</th>
             <th>{t('courses.level')}</th>
             <th>{t('actions.actions')}</th>
           </tr>
@@ -121,7 +121,7 @@ export default function Courses() {
                   <div className="course-title-text">{course.title}</div>
                 </div>
               </td>
-              <td>{isRTL ? `${course.price} ر.س` : `${course.price} SAR`}</td>
+              <td>{`${course.price} ${t('student.currencySuffix')}`}</td>
               <td>{course.duration}</td>
               <td>
                 <span className="enrollment-badge">

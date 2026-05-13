@@ -71,7 +71,7 @@ export default function QuestionEdit() {
   return (
     <div className="admin-page">
       <div className="page-header">
-        <h1>{t('actions.edit')} Question</h1>
+        <h1>{t('questions.editTitle')}</h1>
         <button className="btn" type="button" onClick={() => navigate('/admin/questions')}>
           {t('actions.cancel')}
         </button>
@@ -82,28 +82,28 @@ export default function QuestionEdit() {
       ) : (
         <form className="card" onSubmit={onSubmit}>
           <div className="form-group">
-            <label>Question (Arabic)</label>
+            <label>{t('questions.textAr')}</label>
             <input value={form.text} onChange={(e) => setForm({ ...form, text: e.target.value })} required />
           </div>
           <div className="form-group">
-            <label>Question (English)</label>
+            <label>{t('questions.textEn')}</label>
             <input value={form.textEn} onChange={(e) => setForm({ ...form, textEn: e.target.value })} required />
           </div>
 
           <div className="form-group">
-            <label>Options</label>
+            <label>{t('questions.options')}</label>
             {form.options.map((opt, i) => (
               <input key={i} value={opt} onChange={(e) => updateOption(i, e.target.value, false)} required />
             ))}
           </div>
           <div className="form-group">
-            <label>Options (English)</label>
+            <label>{t('questions.optionsEn')}</label>
             {form.optionsEn.map((opt, i) => (
               <input key={i} value={opt} onChange={(e) => updateOption(i, e.target.value, true)} required />
             ))}
           </div>
           <div className="form-group">
-            <label>Correct Answer Index (0-3)</label>
+            <label>{t('questions.correctIndex')}</label>
             <input
               type="number"
               min="0"

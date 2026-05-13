@@ -57,21 +57,19 @@ export default function Certificates() {
           <div>
             <h1 className="certHeader__title">{t('nav.certificates')}</h1>
             <p className="certHeader__sub">
-              {isRTL
-                ? 'مراجعة طلبات الشهادات واعتمادها'
-                : 'Review and approve certificate requests'}
+              {t('cert.subtitle')}
             </p>
           </div>
 
           <div className="certFilters">
             <select className="certSelect" value={status} onChange={(e) => setStatus(e.target.value)}>
-              <option value="pending">{isRTL ? 'قيد المراجعة' : 'Pending'}</option>
-              <option value="approved">{isRTL ? 'معتمدة' : 'Approved'}</option>
-              <option value="rejected">{isRTL ? 'مرفوضة' : 'Rejected'}</option>
-              <option value="">{isRTL ? 'الكل' : 'All'}</option>
+              <option value="pending">{t('cert.filter.pending')}</option>
+              <option value="approved">{t('cert.filter.approved')}</option>
+              <option value="rejected">{t('cert.filter.rejected')}</option>
+              <option value="">{t('cert.filter.all')}</option>
             </select>
             <button className="btn btn-secondary" onClick={load} disabled={loading}>
-              {loading ? (isRTL ? 'جاري التحميل...' : 'Loading...') : isRTL ? 'تحديث' : 'Refresh'}
+              {loading ? t('msg.loading') : t('cert.refresh')}
             </button>
           </div>
         </div>
@@ -80,11 +78,11 @@ export default function Certificates() {
           <table className="certTable">
             <thead>
               <tr>
-                <th>{isRTL ? 'الطالب' : 'Student'}</th>
-                <th>{isRTL ? 'الدورة' : 'Course'}</th>
-                <th>{isRTL ? 'الحالة' : 'Status'}</th>
-                <th>{isRTL ? 'تاريخ الطلب' : 'Requested at'}</th>
-                <th>{isRTL ? 'إجراءات' : 'Actions'}</th>
+                <th>{t('cert.col.student')}</th>
+                <th>{t('cert.col.course')}</th>
+                <th>{t('cert.col.status')}</th>
+                <th>{t('cert.col.requestedAt')}</th>
+                <th>{t('cert.col.actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -105,14 +103,14 @@ export default function Certificates() {
                         <input
                           className="certSelect"
                           type="text"
-                          placeholder={isRTL ? 'الاسم الرباعي للطالب (من الطلب)' : 'Student full name (from request)'}
+                          placeholder={t('cert.ph.fullName')}
                           value={r.fullName || ''}
                           disabled
                         />
                         <input
                           className="certSelect"
                           type="text"
-                          placeholder={isRTL ? 'الاسم بالإنجليزي (من الطلب)' : 'English full name (from request)'}
+                          placeholder={t('cert.ph.fullNameEn')}
                           value={r.fullNameEn || ''}
                           disabled
                         />
@@ -133,7 +131,7 @@ export default function Certificates() {
                         <input
                           className="certSelect"
                           type="text"
-                          placeholder={isRTL ? 'ملاحظات (اختياري)' : 'Notes (optional)'}
+                          placeholder={t('cert.ph.notes')}
                           value={(draft[r.id]?.notes ?? (r.notes || ''))}
                           onChange={(e) => setDraft((m) => ({ ...m, [r.id]: { ...(m[r.id] || {}), notes: e.target.value } }))}
                         />
@@ -145,7 +143,7 @@ export default function Certificates() {
                             onClick={() => updateStatus(r.id, 'approved')}
                             disabled={savingId === r.id}
                           >
-                            {isRTL ? 'اعتماد' : 'Approve'}
+                            {t('cert.action.approve')}
                           </button>
                         )}
                         {r.status !== 'rejected' && (
@@ -154,7 +152,7 @@ export default function Certificates() {
                             onClick={() => updateStatus(r.id, 'rejected')}
                             disabled={savingId === r.id}
                           >
-                            {isRTL ? 'رفض' : 'Reject'}
+                            {t('cert.action.reject')}
                           </button>
                         )}
                         {r.status !== 'pending' && (
@@ -163,7 +161,7 @@ export default function Certificates() {
                             onClick={() => updateStatus(r.id, 'pending')}
                             disabled={savingId === r.id}
                           >
-                            {isRTL ? 'إرجاع للمراجعة' : 'Set pending'}
+                            {t('cert.action.setPending')}
                           </button>
                         )}
                       </div>
@@ -173,7 +171,7 @@ export default function Certificates() {
               ) : (
                 <tr>
                   <td colSpan={5} style={{ padding: 16, opacity: 0.7 }}>
-                    {loading ? (isRTL ? 'جاري التحميل...' : 'Loading...') : isRTL ? 'لا يوجد طلبات' : 'No requests'}
+                    {loading ? t('msg.loading') : t('cert.noRequests')}
                   </td>
                 </tr>
               )}

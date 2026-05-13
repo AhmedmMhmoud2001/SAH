@@ -137,9 +137,7 @@ export default function Reports() {
         <div className="reportsHeader__meta">
           <h1 className="page-title">{t('nav.reports')}</h1>
           <p>
-            {lang === 'en'
-              ? 'A unified reporting workspace: finance, funnel, learning, and content quality.'
-              : 'مساحة تقارير موحدة: مالية، قمع المبيعات، التعلم، وجودة المحتوى.'}
+            {t('reports.workspaceSubtitle')}
           </p>
         </div>
         <span className="reportsPill">
@@ -189,7 +187,7 @@ export default function Reports() {
           type="button"
         >
           <PieIcon size={16} />
-          {lang === 'en' ? 'Overview' : 'ملخص'}
+          {t('reports.tab.overview')}
         </button>
         <button
           className={activeTab === 'finance' ? 'reportsTab reportsTab--active' : 'reportsTab'}
@@ -197,7 +195,7 @@ export default function Reports() {
           type="button"
         >
           <DollarSign size={16} />
-          {lang === 'en' ? 'Finance' : 'مالية'}
+          {t('reports.tab.finance')}
         </button>
         <button
           className={activeTab === 'funnel' ? 'reportsTab reportsTab--active' : 'reportsTab'}
@@ -205,7 +203,7 @@ export default function Reports() {
           type="button"
         >
           <BarChart3 size={16} />
-          {lang === 'en' ? 'Funnel' : 'قمع المبيعات'}
+          {t('reports.tab.funnel')}
         </button>
         <button
           className={activeTab === 'learning' ? 'reportsTab reportsTab--active' : 'reportsTab'}
@@ -213,7 +211,7 @@ export default function Reports() {
           type="button"
         >
           <GraduationCap size={16} />
-          {lang === 'en' ? 'Learning' : 'التعلم'}
+          {t('reports.tab.learning')}
         </button>
         <button
           className={activeTab === 'content' ? 'reportsTab reportsTab--active' : 'reportsTab'}
@@ -221,7 +219,7 @@ export default function Reports() {
           type="button"
         >
           <CheckCircle2 size={16} />
-          {lang === 'en' ? 'Content QA' : 'جودة المحتوى'}
+          {t('reports.tab.content')}
         </button>
       </div>
 
@@ -232,9 +230,9 @@ export default function Reports() {
               <div className="reportsCol_6">
                 <div className="reportsKpi">
                   <div>
-                    <div className="reportsKpi__label">{lang === 'en' ? 'Paid revenue' : 'إيراد (مدفوع)'}</div>
-                    <div className="reportsKpi__value">{Number(overview.cards?.revenuePaid || 0).toFixed(2)} SAR</div>
-                    <div className="reportsKpi__hint">{lang === 'en' ? 'Paid orders only' : 'طلبات مدفوعة فقط'}</div>
+                    <div className="reportsKpi__label">{t('reports.overview.paidRevenue')}</div>
+                    <div className="reportsKpi__value">{Number(overview.cards?.revenuePaid || 0).toFixed(2)} {t('reports.currency')}</div>
+                    <div className="reportsKpi__hint">{t('reports.overview.paidRevenueHint')}</div>
                   </div>
                   <DollarSign size={26} />
                 </div>
@@ -242,9 +240,9 @@ export default function Reports() {
               <div className="reportsCol_6">
                 <div className="reportsKpi">
                   <div>
-                    <div className="reportsKpi__label">{lang === 'en' ? 'Average order value' : 'متوسط قيمة الطلب'}</div>
-                    <div className="reportsKpi__value">{Number(overview.cards?.aov || 0).toFixed(2)} SAR</div>
-                    <div className="reportsKpi__hint">{lang === 'en' ? 'Across paid orders' : 'على الطلبات المدفوعة'}</div>
+                    <div className="reportsKpi__label">{t('reports.overview.aov')}</div>
+                    <div className="reportsKpi__value">{Number(overview.cards?.aov || 0).toFixed(2)} {t('reports.currency')}</div>
+                    <div className="reportsKpi__hint">{t('reports.overview.aovHint')}</div>
                   </div>
                   <Layers size={26} />
                 </div>
@@ -252,9 +250,9 @@ export default function Reports() {
               <div className="reportsCol_6">
                 <div className="reportsKpi">
                   <div>
-                    <div className="reportsKpi__label">{lang === 'en' ? 'New users' : 'مستخدمون جدد'}</div>
+                    <div className="reportsKpi__label">{t('reports.overview.newUsers')}</div>
                     <div className="reportsKpi__value">{overview.cards?.newUsers || 0}</div>
-                    <div className="reportsKpi__hint">{lang === 'en' ? 'Students created' : 'طلاب تم تسجيلهم'}</div>
+                    <div className="reportsKpi__hint">{t('reports.overview.newUsersHint')}</div>
                   </div>
                   <BookOpen size={26} />
                 </div>
@@ -262,12 +260,10 @@ export default function Reports() {
               <div className="reportsCol_6">
                 <div className="reportsKpi">
                   <div>
-                    <div className="reportsKpi__label">{lang === 'en' ? 'Enrollments' : 'اشتراكات'}</div>
+                    <div className="reportsKpi__label">{t('reports.overview.enrollments')}</div>
                     <div className="reportsKpi__value">{overview.cards?.enrollments || 0}</div>
                     <div className="reportsKpi__hint">
-                      {lang === 'en'
-                        ? `Avg approval: ${overview.cards?.avgApprovalMinutes || 0} min`
-                        : `متوسط وقت الموافقة: ${overview.cards?.avgApprovalMinutes || 0} دقيقة`}
+                      {t('reports.overview.avgApprovalHint', { min: overview.cards?.avgApprovalMinutes || 0 })}
                     </div>
                   </div>
                   <GraduationCap size={26} />
@@ -279,7 +275,7 @@ export default function Reports() {
                   <div className="reportsCard__header">
                     <h3 className="reportsCard__title">
                       <PieIcon size={18} />
-                      {lang === 'en' ? 'Orders by status' : 'الطلبات حسب الحالة'}
+                      {t('reports.overview.ordersByStatus')}
                     </h3>
                   </div>
                   <ResponsiveContainer width="100%" height={300}>
@@ -306,18 +302,18 @@ export default function Reports() {
                   <div className="reportsCard__header">
                     <h3 className="reportsCard__title">
                       <BarChart3 size={18} />
-                      {lang === 'en' ? 'Quick status' : 'حالة سريعة'}
+                      {t('reports.overview.quickStatus')}
                     </h3>
                   </div>
                   <div style={{ display: 'grid', gap: 12 }}>
                     <div className="reportsPill">
-                      {lang === 'en' ? 'Pending orders' : 'طلبات pending'}: <strong>{overview.cards?.ordersByStatus?.pending || 0}</strong>
+                      {t('reports.overview.pendingOrders')}: <strong>{overview.cards?.ordersByStatus?.pending || 0}</strong>
                     </div>
                     <div className="reportsPill">
-                      {lang === 'en' ? 'Paid orders' : 'طلبات مدفوعة'}: <strong>{overview.cards?.ordersByStatus?.paid || 0}</strong>
+                      {t('reports.overview.paidOrders')}: <strong>{overview.cards?.ordersByStatus?.paid || 0}</strong>
                     </div>
                     <div className="reportsPill">
-                      {lang === 'en' ? 'Refunded' : 'مُرتجعات'}: <strong>{overview.cards?.ordersByStatus?.refunded || 0}</strong>
+                      {t('reports.overview.refundedOrders')}: <strong>{overview.cards?.ordersByStatus?.refunded || 0}</strong>
                     </div>
                   </div>
                 </div>
@@ -334,7 +330,7 @@ export default function Reports() {
                   <div className="reportsCard__header">
                     <h3 className="reportsCard__title">
                       <DollarSign size={18} />
-                      {lang === 'en' ? 'Paid revenue trend' : 'اتجاه الإيراد (مدفوع)'}
+                      {t('reports.finance.revenueTrend')}
                     </h3>
                   </div>
                   <ResponsiveContainer width="100%" height={320}>
@@ -360,7 +356,7 @@ export default function Reports() {
                   <div className="reportsCard__header">
                     <h3 className="reportsCard__title">
                       <Layers size={18} />
-                      {lang === 'en' ? 'Orders (latest)' : 'الطلبات (الأحدث)'}
+                      {t('reports.finance.ordersLatest')}
                     </h3>
                     <button
                       className="btn"
@@ -384,19 +380,19 @@ export default function Reports() {
                       }
                     >
                       <Download size={16} style={{ marginInlineEnd: 8 }} />
-                      {lang === 'en' ? 'Export CSV' : 'تصدير CSV'}
+                      {t('reports.exportCsv')}
                     </button>
                   </div>
 
                   <table className="data-table">
                     <thead>
                       <tr>
-                        <th>Order</th>
-                        <th>{lang === 'en' ? 'Status' : 'الحالة'}</th>
-                        <th>{lang === 'en' ? 'Amount' : 'المبلغ'}</th>
-                        <th>{lang === 'en' ? 'Customer' : 'العميل'}</th>
-                        <th>{lang === 'en' ? 'Courses' : 'الدورات'}</th>
-                        <th>{lang === 'en' ? 'Date' : 'التاريخ'}</th>
+                        <th>{t('reports.table.order')}</th>
+                        <th>{t('reports.table.status')}</th>
+                        <th>{t('reports.table.amount')}</th>
+                        <th>{t('reports.table.customer')}</th>
+                        <th>{t('reports.table.courses')}</th>
+                        <th>{t('reports.table.date')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -424,9 +420,9 @@ export default function Reports() {
               <div className="reportsCol_6">
                 <div className="reportsKpi">
                   <div>
-                    <div className="reportsKpi__label">{lang === 'en' ? 'Pending → Paid conversion' : 'تحويل pending إلى paid'}</div>
+                    <div className="reportsKpi__label">{t('reports.funnel.conversion')}</div>
                     <div className="reportsKpi__value">{funnel.metrics?.conversionPendingToPaid || 0}%</div>
-                    <div className="reportsKpi__hint">{lang === 'en' ? 'Paid / (Paid + Pending)' : 'مدفوع / (مدفوع + pending)'}</div>
+                    <div className="reportsKpi__hint">{t('reports.funnel.conversionHint')}</div>
                   </div>
                   <BarChart3 size={26} />
                 </div>
@@ -434,9 +430,9 @@ export default function Reports() {
               <div className="reportsCol_6">
                 <div className="reportsKpi">
                   <div>
-                    <div className="reportsKpi__label">{lang === 'en' ? 'Avg approval time' : 'متوسط وقت الموافقة'}</div>
-                    <div className="reportsKpi__value">{funnel.metrics?.avgApprovalMinutes || 0} {lang === 'en' ? 'min' : 'دقيقة'}</div>
-                    <div className="reportsKpi__hint">{lang === 'en' ? 'Time from created→paid' : 'من إنشاء الطلب حتى الدفع'}</div>
+                    <div className="reportsKpi__label">{t('reports.funnel.avgApproval')}</div>
+                    <div className="reportsKpi__value">{funnel.metrics?.avgApprovalMinutes || 0} {t('reports.funnel.minutes')}</div>
+                    <div className="reportsKpi__hint">{t('reports.funnel.createdToPaid')}</div>
                   </div>
                   <Layers size={26} />
                 </div>
@@ -447,7 +443,7 @@ export default function Reports() {
                   <div className="reportsCard__header">
                     <h3 className="reportsCard__title">
                       <BarChart3 size={18} />
-                      {lang === 'en' ? 'Orders pipeline' : 'مسار الطلبات'}
+                      {t('reports.funnel.pipeline')}
                     </h3>
                   </div>
                   <ResponsiveContainer width="100%" height={320}>
@@ -473,7 +469,7 @@ export default function Reports() {
                   <div className="reportsCard__header">
                     <h3 className="reportsCard__title">
                       <GraduationCap size={18} />
-                      {lang === 'en' ? 'Course completion (avg %)' : 'إكمال الدورات (متوسط %)'}
+                      {t('reports.learning.completionTitle')}
                     </h3>
                   </div>
                   <ResponsiveContainer width="100%" height={320}>
@@ -493,7 +489,7 @@ export default function Reports() {
                   <div className="reportsCard__header">
                     <h3 className="reportsCard__title">
                       <BookOpen size={18} />
-                      {lang === 'en' ? 'Top quizzes (attempts)' : 'أكثر الاختبارات محاولة'}
+                      {t('reports.learning.topQuizzes')}
                     </h3>
                     <button
                       className="btn"
@@ -509,16 +505,16 @@ export default function Reports() {
                       }
                     >
                       <Download size={16} style={{ marginInlineEnd: 8 }} />
-                      {lang === 'en' ? 'Export CSV' : 'تصدير CSV'}
+                      {t('reports.exportCsv')}
                     </button>
                   </div>
                   <table className="data-table">
                     <thead>
                       <tr>
-                        <th>{lang === 'en' ? 'Quiz' : 'الاختبار'}</th>
-                        <th>{lang === 'en' ? 'Attempts' : 'محاولات'}</th>
-                        <th>{lang === 'en' ? 'Avg score' : 'متوسط النتيجة'}</th>
-                        <th>{lang === 'en' ? 'Pass rate' : 'نسبة النجاح'}</th>
+                        <th>{t('reports.learning.quiz')}</th>
+                        <th>{t('reports.learning.attempts')}</th>
+                        <th>{t('reports.learning.avgScore')}</th>
+                        <th>{t('reports.learning.passRate')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -544,9 +540,9 @@ export default function Reports() {
               <div className="reportsCol_6">
                 <div className="reportsKpi">
                   <div>
-                    <div className="reportsKpi__label">{lang === 'en' ? 'Lessons missing video' : 'دروس بدون فيديو'}</div>
+                    <div className="reportsKpi__label">{t('reports.content.lessonsNoVideo')}</div>
                     <div className="reportsKpi__value">{content.checklist?.lessonsMissingVideo || 0}</div>
-                    <div className="reportsKpi__hint">{lang === 'en' ? 'Video URL is empty' : 'لا يوجد رابط فيديو'}</div>
+                    <div className="reportsKpi__hint">{t('reports.content.lessonsNoVideoHint')}</div>
                   </div>
                   <CheckCircle2 size={26} />
                 </div>
@@ -554,9 +550,9 @@ export default function Reports() {
               <div className="reportsCol_6">
                 <div className="reportsKpi">
                   <div>
-                    <div className="reportsKpi__label">{lang === 'en' ? 'Lessons missing quiz' : 'دروس بدون اختبار'}</div>
+                    <div className="reportsKpi__label">{t('reports.content.lessonsNoQuiz')}</div>
                     <div className="reportsKpi__value">{content.checklist?.lessonsMissingQuiz || 0}</div>
-                    <div className="reportsKpi__hint">{lang === 'en' ? 'No lesson quiz linked' : 'لا يوجد اختبار مربوط'}</div>
+                    <div className="reportsKpi__hint">{t('reports.content.lessonsNoQuizHint')}</div>
                   </div>
                   <BookOpen size={26} />
                 </div>
@@ -566,20 +562,20 @@ export default function Reports() {
                   <div className="reportsCard__header">
                     <h3 className="reportsCard__title">
                       <CheckCircle2 size={18} />
-                      {lang === 'en' ? 'Quality actions' : 'إجراءات جودة'}
+                      {t('reports.content.qualityActions')}
                     </h3>
                   </div>
                   <div style={{ display: 'grid', gap: 12 }}>
                     <div className="reportsPill">
-                      {lang === 'en' ? 'Quizzes missing questions' : 'اختبارات بدون أسئلة'}:{' '}
+                      {t('reports.content.quizzesNoQuestions')}:{' '}
                       <strong>{content.checklist?.quizzesMissingQuestions || 0}</strong>
                     </div>
                     <div className="card" style={{ padding: 16 }}>
-                      <h3 style={{ marginTop: 0 }}>{lang === 'en' ? 'Next steps' : 'الخطوات التالية'}</h3>
+                      <h3 style={{ marginTop: 0 }}>{t('reports.content.nextSteps')}</h3>
                       <ul style={{ margin: 0, paddingInlineStart: 18, color: 'var(--text-secondary)' }}>
-                        <li>{lang === 'en' ? 'Add video URLs for missing lessons.' : 'أضف روابط الفيديو للدروس الناقصة.'}</li>
-                        <li>{lang === 'en' ? 'Bulk-create missing lesson quizzes from Quizzes page.' : 'استخدم Bulk Create في صفحة الاختبارات لإنشاء اختبارات الدروس الناقصة.'}</li>
-                        <li>{lang === 'en' ? 'Ensure each quiz has at least 5 questions.' : 'تأكد أن كل اختبار فيه على الأقل 5 أسئلة.'}</li>
+                        <li>{t('reports.content.step1')}</li>
+                        <li>{t('reports.content.step2')}</li>
+                        <li>{t('reports.content.step3')}</li>
                       </ul>
                     </div>
                   </div>

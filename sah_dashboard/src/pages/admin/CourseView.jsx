@@ -21,7 +21,7 @@ function resolveImageUrl(imageUrl) {
 export default function CourseView() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { t, isRTL } = useI18n()
+  const { t } = useI18n()
   const [loading, setLoading] = useState(true)
   const [course, setCourse] = useState(null)
 
@@ -29,9 +29,9 @@ export default function CourseView() {
     const v = String(raw || '').trim()
     if (!v) return '—'
     const key = v.toLowerCase()
-    if (key === 'advanced') return isRTL ? t('level.advanced') : 'Advanced'
-    if (key === 'intermediate') return isRTL ? t('level.intermediate') : 'Intermediate'
-    if (key === 'beginner') return isRTL ? t('level.beginner') : 'Beginner'
+    if (key === 'advanced' || v === 'متقدم') return t('level.advanced')
+    if (key === 'intermediate' || v === 'متوسط') return t('level.intermediate')
+    if (key === 'beginner' || v === 'مبتدئ') return t('level.beginner')
     return v
   }
 
@@ -62,10 +62,10 @@ export default function CourseView() {
   return (
     <div className="admin-page">
       <div className="page-header">
-        <h1 className="page-title">{t('courses.details') || (isRTL ? 'تفاصيل الدورة' : 'Course Details')}</h1>
+        <h1 className="page-title">{t('courses.details')}</h1>
         <div style={{ display: 'flex', gap: 8 }}>
           <button className="btn btn-secondary" onClick={() => navigate('/admin/courses')}>
-            {t('actions.back') || (isRTL ? 'رجوع' : 'Back')}
+            {t('actions.back')}
           </button>
           <button className="btn btn-primary" onClick={() => navigate(`/admin/courses/${course.id}/edit`)}>
             {t('actions.edit')}
@@ -166,9 +166,9 @@ export default function CourseView() {
         </div>
 
         <div style={{ marginTop: 16 }}>
-          <div style={{ fontSize: 12, opacity: 0.7, fontWeight: 600 }}>Certificate text (AR)</div>
+          <div style={{ fontSize: 12, opacity: 0.7, fontWeight: 600 }}>{t('courses.certTextArLabel')}</div>
           <div style={{ marginTop: 6 }}>{course.certificateText || '—'}</div>
-          <div style={{ fontSize: 12, opacity: 0.7, fontWeight: 600, marginTop: 12 }}>Certificate text (EN)</div>
+          <div style={{ fontSize: 12, opacity: 0.7, fontWeight: 600, marginTop: 12 }}>{t('courses.certTextEnLabel')}</div>
           <div style={{ marginTop: 6 }}>{course.enCertificateText || '—'}</div>
         </div>
       </div>

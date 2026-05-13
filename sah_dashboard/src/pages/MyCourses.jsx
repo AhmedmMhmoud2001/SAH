@@ -1,9 +1,11 @@
 import { useMemo, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import * as api from '../api'
+import { useI18n } from '../context/I18nContext'
 import './pages.css'
 
 export default function MyCourses() {
+  const { t, lang } = useI18n()
   const [enrollments, setEnrollments] = useState([])
   const [loading, setLoading] = useState(true)
   const [certMap, setCertMap] = useState({})
@@ -11,11 +13,11 @@ export default function MyCourses() {
 
   useEffect(() => {
     loadEnrollments()
-  }, [])
+  }, [lang])
 
   async function loadEnrollments() {
     try {
-      const [res, certs] = await Promise.all([api.getEnrollments('ar'), api.getMyCertificateRequests()])
+      const [res, certs] = await Promise.all([api.getEnrollments(lang), api.getMyCertificateRequests()])
       setEnrollments(res.enrollments || [])
       const reqs = Array.isArray(certs?.requests) ? certs.requests : []
       const map = {}
@@ -42,11 +44,10 @@ export default function MyCourses() {
       await api.requestCertificate(courseId)
       setCertMap((m) => ({ ...m, [courseId]: 'pending' }))
     } catch (err) {
-      // If already requested, backend returns 409. Treat it as pending on UI.
       if (err?.response?.status === 409) {
         setCertMap((m) => ({ ...m, [courseId]: 'pending' }))
       } else {
-        alert('Failed to request certificate')
+        alert(t('myCourses.certRequestFailed'))
       }
     } finally {
       setRequestingCourseId('')
@@ -59,15 +60,17 @@ export default function MyCourses() {
         <div className="container myCoursesPage">
           <section className="my-courses-section">
             <header className="myCoursesHeader">
-              <h2 className="myCoursesTitle">دوراتي</h2>
+              <h2 className="myCoursesTitle">{t('myCourses.title')}</h2>
             </header>
-            
+
             {loading ? (
-              <p>Loading...</p>
+              <p>{t('msg.loading')}</p>
             ) : sorted.length === 0 ? (
               <div className="empty-state">
-                <p>You haven't enrolled in any courses yet.</p>
-                <Link to="/courses" className="btn">Browse Courses</Link>
+                <p>{t('myCourses.empty')}</p>
+                <Link to="/courses" className="btn">
+                  {t('myCourses.browseCourses')}
+                </Link>
               </div>
             ) : (
               <div className="myCoursesGrid">
@@ -89,7 +92,7 @@ export default function MyCourses() {
 
                           <div className="myCourseProg">
                             <div className="myCourseProg__row">
-                              <span className="myCourseProg__pct">مكتمل {progress}%</span>
+                              <span className="myCourseProg__pct">{t('myCourses.progress', { pct: progress })}</span>
                             </div>
                             <div className="myCourseProg__bar" role="progressbar" aria-valuenow={progress}>
                               <span className="myCourseProg__fill" style={{ width: `${progress}%` }} />
@@ -101,22 +104,31 @@ export default function MyCourses() {
                       <div className="myCourseCard__cta">
                         {progress >= 100 ? (
                           status === 'approved' ? (
-                            <button className="btn myCourseBtn" disabled>تم اعتماد الشهادة</button>
+                            <button className="btn myCourseBtn" disabled>
+                              {t('myCourses.certApproved')}
+                            </button>
                           ) : status === 'pending' ? (
-                            <button className="btn myCourseBtn" disabled>طلب الشهادة قيد المراجعة</button>
+                            <button className="btn myCourseBtn" disabled>
+                              {t('myCourses.certPending')}
+                            </button>
                           ) : status === 'rejected' ? (
-                            <button className="btn myCourseBtn" disabled>تم رفض طلب الشهادة</button>
+                            <button className="btn myCourseBtn" disabled>
+                              {t('myCourses.certRejected')}
+                            </button>
                           ) : (
                             <button
                               className="btn myCourseBtn"
+                              type="button"
                               onClick={() => onRequestCertificate(courseId)}
                               disabled={!canRequest || requestingCourseId === courseId}
                             >
-                              {requestingCourseId === courseId ? 'جاري الإرسال...' : 'طلب شهادة'}
+                              {requestingCourseId === courseId ? t('myCourses.requesting') : t('myCourses.requestCert')}
                             </button>
                           )
                         ) : (
-                          <Link to={`/course/${courseId}/learn`} className="btn myCourseBtn">أكمل الدورة</Link>
+                          <Link to={`/course/${courseId}/learn`} className="btn myCourseBtn">
+                            {t('myCourses.completeCourse')}
+                          </Link>
                         )}
                       </div>
                     </article>

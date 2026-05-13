@@ -137,7 +137,7 @@ export default function UserView() {
           <div style={{ color: 'var(--text-secondary, #64748b)' }}>
             <div><strong>{t('users.name')}:</strong> {user.name}</div>
             <div><strong>{t('users.email')}:</strong> {user.email}</div>
-            <div><strong>Phone:</strong> {user.phone || '-'}</div>
+            <div><strong>{t('users.phone')}:</strong> {user.phone || '-'}</div>
             <div><strong>{t('users.role')}:</strong> {getRoleLabel(user.role)}</div>
             <div><strong>{t('users.created')}:</strong> {new Date(user.createdAt).toLocaleString()}</div>
           </div>
@@ -146,7 +146,7 @@ export default function UserView() {
         <h3 style={{ marginBottom: '10px' }}>{t('device.title')}</h3>
         <div style={{ marginBottom: 18, color: 'var(--text-secondary, #64748b)' }}>
           <div style={{ marginBottom: 10 }}>
-            <strong>{t('device.deviceId')}s:</strong>
+            <strong>{t('device.devicesHeading')}:</strong>
             {loadingDevices ? (
               <span style={{ marginLeft: 8 }}>{t('msg.loading')}</span>
             ) : devices.length === 0 ? (
@@ -294,9 +294,9 @@ export default function UserView() {
           <table className="data-table">
             <thead>
               <tr>
-                <th>{t('nav.courses') || 'Course'}</th>
-                <th>{t('reports.learning.completedLessons') || 'Completed'}</th>
-                <th>{t('reports.learning.completionRate') || 'Progress'}</th>
+                <th>{t('nav.courses')}</th>
+                <th>{t('reports.learning.completedLessons')}</th>
+                <th>{t('reports.learning.completionRate')}</th>
               </tr>
             </thead>
             <tbody>
@@ -326,7 +326,7 @@ export default function UserView() {
                 <input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required />
               </div>
               <div className="form-group">
-                <label>Phone</label>
+                <label>{t('users.phone')}</label>
                 <input type="text" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} />
               </div>
               <div className="form-group">
@@ -340,7 +340,7 @@ export default function UserView() {
                 </select>
               </div>
               <div className="form-group">
-                <label>Profile Photo</label>
+                <label>{t('users.profilePhoto')}</label>
                 <input type="file" accept="image/*" onChange={(e) => setAvatarFile(e.target.files?.[0] || null)} />
               </div>
               <div className="form-actions">

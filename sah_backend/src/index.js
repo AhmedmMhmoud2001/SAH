@@ -63,12 +63,32 @@ app.use((req, res, next) => {
   res.status(404).json({ error: 'Route not found', path: req.url })
 })
 
+function isDbUnavailableError(err) {
+  const name = err?.name || ''
+  if (name === 'PrismaClientInitializationError') return true
+  const code = err?.code
+  // P1001: can't reach server; P1000: authentication failed against DB
+  if (code === 'P1001' || code === 'P1000') return true
+  const msg = String(err?.message || '')
+  if (msg.includes("Can't reach database server")) return true
+  return false
+}
+
 app.use((err, req, res, next) => {
   // Handle invalid JSON bodies (e.g., malformed request payload)
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
     return res.status(400).json({
       error: 'Invalid JSON body',
       message: err.message,
+    })
+  }
+  if (isDbUnavailableError(err)) {
+    console.error('[503] Database unavailable:', req.method, req.url)
+    console.error(err.message)
+    return res.status(503).json({
+      error: 'Database unavailable',
+      message:
+        'Cannot connect to MySQL. Start your database server (e.g. on localhost:3306) and verify DATABASE_URL in .env.',
     })
   }
   console.error('[500] Error at:', req.method, req.url)
