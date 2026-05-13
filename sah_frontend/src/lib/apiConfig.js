@@ -1,7 +1,5 @@
 /**
- * Default public API (no trailing slash). Used when a production build is opened
- * from a public HTTPS host but env still points at loopback — avoids Chrome
- * "Local Network Access" blocking https://vercel.app → http://localhost.
+ * Fallback when env + injected index script are missing (should not happen after `vite build`).
  */
 const PUBLIC_PRODUCTION_ORIGIN = 'https://sah.nodeteam.site'
 
@@ -24,25 +22,45 @@ function isBrowserOnLoopbackHost() {
   return isLoopbackHostname(window.location.hostname)
 }
 
+function readInjectedApiUrl() {
+  if (typeof window === 'undefined') return ''
+  const w = window.__SAH_API_URL__
+  return typeof w === 'string' ? w.trim() : ''
+}
+
+function readInjectedApiBase() {
+  if (typeof window === 'undefined') return ''
+  const w = window.__SAH_API_BASE_URL__
+  return typeof w === 'string' ? w.trim().replace(/\/$/, '') : ''
+}
+
 /**
  * Full API base including `/api` suffix (e.g. https://host/api).
+ * Order: index.html inject (build) → Vite env → dev localhost / prod public.
  */
 export function getResolvedApiUrl() {
-  const raw = import.meta.env.VITE_API_URL
-  const trimmed = typeof raw === 'string' ? raw.trim() : ''
   const prod = import.meta.env.PROD
   const dev = import.meta.env.DEV
   const onLoopbackPage = isBrowserOnLoopbackHost()
 
+  const injected = readInjectedApiUrl()
+  if (injected) {
+    if (prod && !onLoopbackPage && isLocalApiUrl(injected)) {
+      return `${PUBLIC_PRODUCTION_ORIGIN}/api`
+    }
+    return injected
+  }
+
+  const raw = import.meta.env.VITE_API_URL
+  const trimmed = typeof raw === 'string' ? raw.trim() : ''
+
   if (trimmed) {
-    // Production app on the public internet must not call loopback (Chrome blocks it).
     if (prod && !onLoopbackPage && isLocalApiUrl(trimmed)) {
       return `${PUBLIC_PRODUCTION_ORIGIN}/api`
     }
     return trimmed
   }
 
-  // `vite dev` only → local backend. Every `vite build` bundle → public API (never default localhost).
   if (dev) {
     return 'http://localhost:3000/api'
   }
@@ -53,11 +71,20 @@ export function getResolvedApiUrl() {
  * Backend origin without `/api` (e.g. https://host).
  */
 export function getResolvedApiBaseUrl() {
-  const raw = import.meta.env.VITE_API_BASE_URL
-  const trimmed = typeof raw === 'string' ? raw.trim() : ''
   const prod = import.meta.env.PROD
   const dev = import.meta.env.DEV
   const onLoopbackPage = isBrowserOnLoopbackHost()
+
+  const injected = readInjectedApiBase()
+  if (injected) {
+    if (prod && !onLoopbackPage && isLocalApiUrl(`${injected}/`)) {
+      return PUBLIC_PRODUCTION_ORIGIN
+    }
+    return injected
+  }
+
+  const raw = import.meta.env.VITE_API_BASE_URL
+  const trimmed = typeof raw === 'string' ? raw.trim() : ''
 
   if (trimmed) {
     const normalized = trimmed.replace(/\/$/, '')
